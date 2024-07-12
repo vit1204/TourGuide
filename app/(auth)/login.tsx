@@ -1,33 +1,26 @@
-import { Link } from "expo-router";
-import React, { useState } from "react";
-import { View, Text, ScrollView, Dimensions } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Image, StyleSheet, Platform, View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { useState } from 'react';
+import { Link, router } from "expo-router";
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+
 
 import FormField from '../../components/FormField'
 
-const Login = () => {
+export default function HomeScreen() {
 
     const [form,setForm] = useState({
         email: "",
         password: ""
     })
-    function handleLogin(){
-        console.log(form)
-    }
- 
-    return(
-        <SafeAreaView className="bg-blue_dark h-full" >
-       <ScrollView>
-        <View
-          className="w-full flex justify-center items-center px-4 "
-          style={{
-            minHeight: Dimensions.get("window").height - 200,
-          }}
-        >
-          <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
-            Log in to Aora
-          </Text>
-
+  return (
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#FFA300', dark: '#FFA300' }}
+      headerImage={
+       <Text style={{ fontSize:'32px', fontWeight: 'bold' }} >
+        Log in
+       </Text>
+      }>
+              <View className='bg-white h-full'  >  
           <FormField
             title="Email"
             value={form.email}
@@ -41,30 +34,40 @@ const Login = () => {
             title="Password"
             value={form.password}
             handleChangeText={(e: any) => setForm({ ...form, password: e })}
-            otherStyles="mt-7"
+            otherStyles="mt-7 mb-7"
             placeholder={"Enter your password"}
           />
 
-          <Text onPress={handleLogin} >
 
-          </Text>
+          
+           <TouchableOpacity className=" ml-[10px]  w-[95%] rounded-3xl pt-4 pb-4 flex items-center justify-center mt-[30px] bg-primary" >
 
-
-          <View className="flex justify-center pt-5 flex-row gap-2">
+    <Text className=" text-white text-center font-Nmedium text-[20px] ">Sign In</Text>
+  </TouchableOpacity>
+  <View className="flex justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">
               Don't have an account?
             </Text>
             <Link
               href="/register"
-              className="text-lg font-psemibold text-secondary"
+              className="text-lg font-psemibold text-primary"
             >
               Signup
             </Link>
           </View>
         </View>
-      </ScrollView>
-        </SafeAreaView>
-    )
+    </ParallaxScrollView>
+  );
 }
 
-export default Login;
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+});
