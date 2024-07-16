@@ -16,7 +16,7 @@ export default function HomeScreen() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#FFA300', dark: '#FFA300' }}
       headerImage={
-       <Text style={{ fontSize:'32px', fontWeight: 'bold' }} >
+       <Text style={{ fontSize:32, fontWeight: 'bold' }} >
         Log in
        </Text>
       }>
@@ -40,10 +40,10 @@ export default function HomeScreen() {
 
 
           
-           <TouchableOpacity className=" ml-[10px]  w-[95%] rounded-3xl pt-4 pb-4 flex items-center justify-center mt-[30px] bg-primary" >
-
-    <Text className=" text-white text-center font-Nmedium text-[20px] ">Sign In</Text>
-  </TouchableOpacity>
+          <TouchableOpacity className=" ml-[10px]  w-[95%] rounded-3xl pt-4 pb-4 
+                      flex items-center justify-center mt-[30px] bg-primary" >
+              <Text className=" text-white text-center font-Nmedium text-[20px] ">Sign In</Text>
+          </TouchableOpacity>
   <View className="flex justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">
               Don't have an account?
