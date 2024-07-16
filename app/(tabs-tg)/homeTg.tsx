@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { images } from '@/constants'
@@ -7,14 +8,17 @@ import TourItem from '@/components/TourItem';
 
 const HomeTg = () => {
 
-  const [User, setUser] = useState({
-    
-  })
-
+  const [user, setUser] = useState<any>(null);
   const [currentDate, setCurrentDate] = useState('');
 
-
   useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await AsyncStorage.getItem('user');
+      console.log("USER:", user);
+      setUser(JSON.parse(userData as string));
+    };
+    fetchUser();
+
     const updateDate = () => {
       const date = new Date();
       const options: Intl.DateTimeFormatOptions = {
@@ -31,13 +35,17 @@ const HomeTg = () => {
 
     return () => clearInterval(intervalId);
   }, []);
-  
+
+  if (!user) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView>
-        <StatusBar style="light" backgroundColor="#FF8C00" />
+      <StatusBar style="light" backgroundColor="#FF8C00" />
         <View>
-          <View className='bg-primary px-2 flex-row text-center items-center justify-between rounded-b-3xl'>
+          <View className='bg-primary_darker px-2 flex-row text-center items-center justify-between rounded-b-3xl'>
             <View className='flex-row items-center'>
               <Image
                 source={images.logo}
@@ -48,15 +56,15 @@ const HomeTg = () => {
 
             <View className="mb-4 flex-col items-center mr-2">
               <Text className="text-black text-base mt-4">Welcome Back</Text>
-              <Text className="text-xl text-blue_text font-extrabold">Ho Thanh Tien</Text>
+              <Text className="text-xl text-blue_text font-extrabold">{(user as any)?.userName}</Text>
             </View>
           </View>
         </View>
 
         <View className='flex-col px-4'>
           <View className='flex-col items-center mb-6 mt-10'>
-            <Text className="text-5xl font-extrabold">Hi, Tien!</Text>
-            <Text className="text-gray-500 text-lg">#hothanhtien123</Text>
+            <Text className="text-5xl font-extrabold">Hi, {user.userName}!</Text>
+            <Text className="text-gray-500 text-lg">#{user.id}</Text>
             <Text className="text-4xl font-bold mt-2">10,500</Text>
             <Text className="text-gray-500 text-lg">Current Points</Text>
           </View>

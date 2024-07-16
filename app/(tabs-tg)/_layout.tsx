@@ -46,7 +46,7 @@ const TabsLayout = () => {
                 }}
             >
                 <Tabs.Screen 
-                    name='home_tg'
+                    name='homeTg'
                     options={{
                         title: 'Home',
                         headerShown: false,
@@ -61,7 +61,7 @@ const TabsLayout = () => {
                     }}
                 />
                 <Tabs.Screen 
-                    name='message_tg'
+                    name='messageTg'
                     options={{
                         title: 'Message',
                         headerShown: false,
@@ -76,7 +76,7 @@ const TabsLayout = () => {
                     }}
                 />
                 <Tabs.Screen 
-                    name='create_tg'
+                    name='create'
                     options={{
                         title: 'Create',
                         headerShown: false,
@@ -91,7 +91,7 @@ const TabsLayout = () => {
                     }}
                 />
                 <Tabs.Screen 
-                    name='payment_tg'
+                    name='paymentTg'
                     options={{
                         title: 'Payment',
                         headerShown: false,
@@ -106,7 +106,7 @@ const TabsLayout = () => {
                     }}
                 />
                 <Tabs.Screen 
-                    name='profile_tg'
+                    name='profileTg'
                     options={{
                         title: 'Profile',
                         headerShown: false,
