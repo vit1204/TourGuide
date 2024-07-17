@@ -6,8 +6,8 @@ import { router } from 'expo-router';
 
 const TourItem = () => {
   return (
-    <View className='mb-6'>
-        <View className="flex-col py-2 px-2 rounded-lg border-gray-700 border-2">
+    <View className='mt-3 mb-3 p-1'>
+        <View className="flex-col py-1 px-1 rounded-lg border-gray-700 border-2">
             <View className="flex-row items-center justify-between py-4 px-2">
                 <View className="bg-[#F2F2F2] rounded-lg py-1 px-3">
                     <Text className="text-base font-bold text-center">July</Text>
@@ -42,7 +42,7 @@ const TourItem = () => {
 
         <CustomButton 
             title='Detail'
-            handlePress={() => router.replace('detail-tour')}
+            handlePress={() => router.push('/detailTour/detail-tour')}
             containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
             textStyles='text-white font-bold text-center text-lg'
         />
