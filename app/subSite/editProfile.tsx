@@ -1,48 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import FormFieldProfile from '@/components/FormFieldProfile';
 
 import { fetchHometowns, fetchLanguages } from '@/config/fetchSubInfo';
+import RadioCheck from '@/components/RadioCheck';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
-  const [avatar, setAvatar] = useState('https://via.placeholder.com/150');
-  const [fullname, setFullname] = useState('Nguyen Van A');
-  const [phone, setPhone] = useState('+ 84 123-456-789');
-  const [email, setEmail] = useState('nguyenvana@example.com');
-  const [language, setLanguage] = useState('Vietnamese');
-  const [gender, setGender] = useState('Female');
-  const [hometown, setHometown] = useState('Da Nang, Vietnam');
-  const [interests, setInterests] = useState('Traveling, Cooking');
+
+  const [form, setForm] = useState({
+    avatar: 'https://via.placeholder.com/150',
+    fullname: 'Nguyen Van A',
+    phone: '+ 84 123-456-789',
+    email: 'nguyenvana@example.com',
+    language: 'Vietnamese',
+    gender: 'Female',
+    hometown: 'Da Nang, Vietnam',
+    interests: 'Traveling, Cooking'
+  });
 
   const [languages, setLanguages] = useState([]);
   const [hometowns, setHometowns] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const data1 = await fetchHometowns();
-      setHometowns(data1);
+      const hometownsData = await fetchHometowns();
+      setHometowns(hometownsData);
   
-      const data2 = await fetchLanguages();
-      setLanguages(data2);
+      const languagesData = await fetchLanguages();
+      setLanguages(languagesData);
     }
     fetchData();
   }, []);
 
   const pickImage = async () => {
-    let result = await ImagePicker.
-    launchImageLibraryAsync({
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
       quality: 1,
     });
 
     if (!result.canceled) {
-      setAvatar(result.assets[0].uri);
+      setForm({ ...form, avatar: result.assets[0].uri });
     }
   };
 
@@ -59,12 +62,14 @@ const EditProfileScreen = () => {
     });
   }, [navigation]);
 
-  const validateEmail = (email) => {
+  const validateEmail = (email: string) => {
     const regex = /\S+@\S+\.\S+/;
     return regex.test(email);
   };
 
   const saveChanges = async () => {
+    const { fullname, phone, email, language, gender, hometown, interests } = form;
+
     // Kiểm tra thông tin người dùng
     if (!fullname.trim() || !phone.trim() || !email.trim() || !language.trim() || !gender.trim() || !hometown.trim() || !interests.trim()) {
       Alert.alert('Error', 'Please fill in all the fields');
@@ -76,7 +81,6 @@ const EditProfileScreen = () => {
       return;
     }
 
-    
     // Lưu thông tin người dùng
     navigation.goBack();
   }
@@ -85,68 +89,78 @@ const EditProfileScreen = () => {
     <SafeAreaView className="flex-1 bg-white" edges={['right', 'bottom', 'left']}>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <TouchableOpacity onPress={pickImage} className="items-center mb-4">
-          <Image source={{ uri: avatar }} className="w-24 h-24 rounded-full" />
+          <Image source={{ uri: form.avatar }} className="w-24 h-24 rounded-full" />
           <Text className="text-blue-500 text-base mt-2">Change Avatar</Text>
         </TouchableOpacity>
         <View className="mb-4">
           <FormFieldProfile
             title="Fullname"
-            value={fullname}
+            value={form.fullname}
             placeholder="Enter your fullname"
-            handleChangeText={setFullname}
-            otherStyles={''} secureTextEntry={false}         
+            handleChangeText={(text) => setForm({ ...form, fullname: text })}
+            otherStyles={''}
+            secureTextEntry={false}         
           />
 
           <FormFieldProfile
             title="Phone"
-            value={phone}
+            value={form.phone}
             placeholder="Enter your phone number"
-            handleChangeText={setPhone} otherStyles={'mt-5'} secureTextEntry={false}          
+            handleChangeText={(text) => setForm({ ...form, phone: text })}
+            otherStyles={'mt-5'}
+            secureTextEntry={false}          
           />
 
          <FormFieldProfile
             title="Email"
-            value={email}
+            value={form.email}
             placeholder="Enter your email"
-            handleChangeText={setEmail} 
-            otherStyles={'mt-5'} 
+            handleChangeText={(text) => setForm({ ...form, email: text })}
+            otherStyles={'mt-5'}
             secureTextEntry={false}          
           />
 
           <FormFieldProfile
             title="Language"
-            value={language}
+            value={form.language}
             placeholder="Enter your language"
-            handleChangeText={setLanguage}
-            otherStyles={'mt-5'} 
+            handleChangeText={(text) => setForm({ ...form, language: text })}
+            otherStyles={'mt-5'}
             secureTextEntry={false}
           />
 
-          <Text className="text-lg text-black font-Nbold">Language:</Text>
-          <TextInput
-            className="border border-gray-300 py-2 px-4 rounded mb-4"
-            value={language}
-            onChangeText={setLanguage}
+          <Text className="text-lg text-black font-Nbold">Gender:</Text>
+          <View className='flex flex-row justify-around'>
+            <RadioCheck
+              title='Male'
+              onChange={(e) => setForm({ ...form, gender: e })}
+              value='Male'
+              selectedValue={form.gender}
+            />
+
+            <RadioCheck
+              title='Female'
+              onChange={(e) => setForm({ ...form, gender: e })}
+              value='Female'
+              selectedValue={form.gender}
+            />
+          </View>
+
+          <FormFieldProfile 
+            title="Hometown"
+            value={form.hometown}
+            placeholder="Enter your hometown"
+            handleChangeText={(text) => setForm({ ...form, hometown: text })}
+            otherStyles={'mt-5'}
+            secureTextEntry={false}
           />
 
-          <Text className="text-lg text-black font-Nbold">Gender:</Text>
-          <TextInput
-            className="border border-gray-300 py-2 px-4 rounded mb-4"
-            value={gender}
-            onChangeText={setGender}
-          />
-          <Text className="text-lg text-black font-Nbold">Hometown:</Text>
-          <TextInput
-            className="border border-gray-300 py-2 px-4 rounded mb-4"
-            value={hometown}
-            onChangeText={setHometown}
-          />
           <FormFieldProfile
             title="Interests"
-            value={interests}
+            value={form.interests}
             placeholder="Enter your interests"
-            handleChangeText={setInterests} 
-            otherStyles={'mt-5'} 
+            handleChangeText={(text) => setForm({ ...form, interests: text })}
+            otherStyles={'mt-5'}
             secureTextEntry={false}          
           />
         </View>
