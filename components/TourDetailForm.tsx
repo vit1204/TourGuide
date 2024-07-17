@@ -6,7 +6,7 @@ import { images } from '@/constants';
 
 const TourDetailForm = () => {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white h-full" edges={['right', 'bottom', 'left']}>
 
       <ScrollView>
         <View className="flex-1 items-center py-10">

@@ -151,8 +151,22 @@ const MyTrips = () => {
   }, [navigation]);
 
   return (
-      <SafeAreaView className="flex-1 bg-white h-full">
-          <Tab.Navigator>
+      <SafeAreaView className="flex-1 bg-white h-full" edges={['right', 'bottom', 'left']}>
+          <Tab.Navigator
+            screenOptions={{
+              tabBarActiveTintColor: '#FF8C00',
+              tabBarInactiveTintColor: 'gray',
+              tabBarIndicatorStyle: {
+                backgroundColor: '#FF8C00',
+              },
+              tabBarLabelStyle: {
+                fontWeight: 'bold',
+              },
+              tabBarStyle: {
+                marginTop: 0, // Loại bỏ margin trên của TabBar
+              },
+            }}
+          >
             <Tab.Screen name="Upcoming" component={UpcomingTrips} />
             <Tab.Screen name="Past" component={PastTrips} />
           </Tab.Navigator>
