@@ -42,8 +42,6 @@ const RootLayout = () => {
       <Stack.Screen name="(tabs)" options={ { headerShown:false } } />
       <Stack.Screen name="(tabs-tg)" options={ { headerShown:false } } />
       <Stack.Screen name="(searchTourguide)" options={{headerShown:false}} />
-      <Stack.Screen name="detailTour/detail-tour"  options={{ headerShown: true }} />
-      <Stack.Screen name="myTrip/myTrip"  options={{ headerShown: true }} />
     </Stack>
   );
 }

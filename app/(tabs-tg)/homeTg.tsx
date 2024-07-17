@@ -87,7 +87,7 @@ const HomeTg = () => {
 
           {/* Mục My Trips */}
           <TouchableOpacity className="bg-white flex-row items-center justify-between border-b border-gray-200 py-3 px-4"
-            onPress={() => router.push('/myTrip/myTrip')}>
+            onPress={() => router.push('/subSite/myTrip')}>
             <View className="flex-row items-center">
               <Ionicons name="person-outline" size={24} color="black" />
               <Text className="ml-3 text-black text-base">My Trips</Text>

@@ -25,7 +25,7 @@ export default function Register() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#FFA300', dark: '#FFA300' }}
       headerImage={
-       <Text style={{ fontSize:'32px', fontWeight: 'bold' }} >
+       <Text style={{ fontSize:32, fontWeight: 'bold' }} >
         Sign up
        </Text>
       }>
