@@ -15,34 +15,50 @@ const HomeTg = () => {
   const [user, setUser] = useState<User | null>(null);
   const [tours, setTours] = useState<Tour[]>([]);
   const [currentDate, setCurrentDate] = useState('');
+  const [activeTours, setActiveTours] = useState<Tour[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // State để theo dõi trạng thái tải
 
   useEffect(() => {
-    //Get detail ìnfo of tour guide
     const fetchUser = async () => {
       try {
         const userData = await AsyncStorage.getItem('user');
         if (userData) {
-          setUser(JSON.parse(userData) as User);
-          
-          try {
-            const data = await getAllTourByGuideId(user?._id as string);
-            //console.log(data);
-            setTours(data.Tour);
-
-            await AsyncStorage.setItem('tours', JSON.stringify(data.Tour));
-          } catch (error) {
-            console.error('Error fetching tour data', error);
-          }
+          const parsedUser = JSON.parse(userData) as User;
+          setUser(parsedUser);
         } else {
           console.log('No user data found');
         }
       } catch (error) {
         console.error('Error fetching user data', error);
+      } finally {
+        setIsLoading(false); //Sau khi xử lý dữ liệu, set isLoading thành false
       }
     };
+  
     fetchUser();
-    // update Time now
-    const updateDate = async () => {
+  }, []); // Empty dependency array to run only once on mount
+  
+  useEffect(() => {
+    if (user) {
+      const fetchTours = async () => {
+        try {
+          const data = await getAllTourByGuideId(user._id);
+          setTours(data.Tour);
+          await AsyncStorage.setItem('tours', JSON.stringify(data.Tour));
+        } catch (error) {
+          console.error('Error fetching tour data', error);
+        }
+      };
+  
+      fetchTours();
+    }
+  }, [user]); 
+  
+  useEffect(() => {
+    const dataActive = tours.filter(tour => tour.status === 'activity');
+    setActiveTours(dataActive);
+  
+    const updateDate = () => {
       const date = new Date();
       const options: Intl.DateTimeFormatOptions = {
         weekday: 'long',
@@ -52,37 +68,19 @@ const HomeTg = () => {
       };
       setCurrentDate(date.toLocaleDateString('en-US', options));
     };
+  
     updateDate();
     const intervalId = setInterval(updateDate, 1000 * 60); // Update every minute
-
+  
     return () => clearInterval(intervalId);
-  }, []);
+  }, [tours]); // Dependency on tours to update active tours and current date
 
-  //useEffect(() => {
-  //   // Get all tour of tour guide
-  //   const getAllTour = async () => {
-  //     try {
-  //       console.log('hello');
-  //       const data = await getAllTourByGuideId(user?._id as string);
-  //       console.log(data);
-  //       setTours(data.Tour);
-  //       await AsyncStorage.setItem('tours', JSON.stringify(data.Tour));
-        
-  //     } catch (error) {
-  //       console.error('Error fetching tour data', error);
-  //     }
-  //   }
-  //  getAllTour();
-  // },[]);
-
-  //console.log('All Tour', tours);
-
-  const activeTours = tours.filter(tour => tour.status === 'activity');
-  console.log('ACTIVE TOUR: ', activeTours);
-
+  if (isLoading) {
+    return <Text>Loading...</Text>; // Nếu isLoading là true, hiển thị thông báo tải
+  }
 
   if (!user) {
-    return <Text>Loading...</Text>;
+    return <Text>No user data found</Text>; // Nếu không có user, hiển thị thông báo lỗi hoặc thông tin không có
   }
 
   return (
@@ -153,4 +151,4 @@ const HomeTg = () => {
   )
 }
 
-export default HomeTg
+export default HomeTg;

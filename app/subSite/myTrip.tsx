@@ -46,8 +46,6 @@ const MyTrips = () => {
     fetchTours();
   }, []);
 
-  console.log('ALLTOUR: ', tours);
-
   const upcomingTours = tours.filter(tour => tour.status === 'upcoming');
   const pastTours = tours.filter(tour => tour.status === 'past');
 

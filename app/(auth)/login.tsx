@@ -20,15 +20,15 @@ export default function HomeScreen() {
       try {
         const data = await login(form.userName, form.password);
         await AsyncStorage.setItem('authToken', data.token);
-
+    
         // Decode token để lấy userId
         const decodedToken: any = jwtDecode(data.token);
         const userId = decodedToken.id;
-
+    
          // Gọi API để lấy thông tin người dùng
         const userInfo = await getUserById(userId);
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
-  
+    
         if (data.role === 'user') {
           router.replace('/home');
         } else if (data.role === 'guide') {
@@ -42,6 +42,7 @@ export default function HomeScreen() {
         Alert.alert('Login failed', error.message);
       }
     };
+    
 
   return (
     <ParallaxScrollView

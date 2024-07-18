@@ -9,8 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TourItem = ({tour}: {tour: Tour}) => {
 
-    console.log('Tour in tourItem:' , tour);
-
     const startDate = new Date(tour.startTime);
     const endDate = new Date(tour.endTime);
 
@@ -26,7 +24,6 @@ const TourItem = ({tour}: {tour: Tour}) => {
       const toDetailTour = async () => {
         try {
             await AsyncStorage.setItem('currentTour', JSON.stringify(tour));
-            console.log('Tour saved successfully.');
             router.push('/subSite/detail-tour');
         } catch (error) {
             console.error('Error storing current tour', error);
@@ -72,7 +69,7 @@ const TourItem = ({tour}: {tour: Tour}) => {
 
             <CustomButton 
                 title='Detail'
-                handlePress={() => router.push('/subSite/detail-tour')}
+                handlePress={toDetailTour}
                 containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
                 textStyles='text-white font-bold text-center text-lg'
             />

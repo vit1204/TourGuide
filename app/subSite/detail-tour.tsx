@@ -4,35 +4,37 @@ import TourDetailForm from '@/components/TourDetailForm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User, Tour } from '@/types/interface';
 import { getUserById } from '@/config/authApi';
-import { router } from 'expo-router';
+import { Text, View } from 'react-native';
 
 const TourDetail = () => {
-  console.log('VAO TOUR DETAIL');
   const navigation = useNavigation();
 
   const [currentTour, setCurrentTour] = useState<Tour | null>(null);
   const [customer, setCustomer] = useState<User | null>(null);
   const [guide, setGuide] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getCurrentTour = async () => {
       try {
-        console.log('Vao day nhe');
         const tourData = await AsyncStorage.getItem('currentTour');
-        console.log('TOIUR DÂTTA; ', tourData);
         if (tourData) {
           const parsedTour = JSON.parse(tourData) as Tour;
           setCurrentTour(parsedTour);
         } else {
           console.log('No current tour found');
         }
-
       } catch (error) {
         console.error('Error getting current tour', error);
+      } finally {
+        setIsLoading(false); //Sau khi xử lý dữ liệu, set isLoading thành false
       }
     };
-    getCurrentTour();
 
+    getCurrentTour();
+  }, []);
+
+  useEffect(() => {
     const getCurrentGuide = async () => {
       try {
         const guideData = await AsyncStorage.getItem('user');
@@ -45,8 +47,11 @@ const TourDetail = () => {
         console.error('Error getting guide data', error);
       }
     };
-    getCurrentGuide();
-  }, []);
+
+    if (currentTour) {
+      getCurrentGuide();
+    }
+  },[currentTour])
 
   useEffect(() => {
     const getCurrentCustomer = async () => {
@@ -54,7 +59,7 @@ const TourDetail = () => {
         if (currentTour) {
           const customerData = await getUserById(currentTour.guide_id as string);
           if (customerData) {
-            setCustomer(customerData as User);
+            setCustomer((customerData.userDetial) as User);
           } else {
             console.log('No customer found');
           }
@@ -66,10 +71,10 @@ const TourDetail = () => {
 
     if (currentTour) {
       getCurrentCustomer();
-    } else {
-      console.log('No current tour found - deo co tua nao')
     }
   }, [currentTour]);
+
+  
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -84,8 +89,25 @@ const TourDetail = () => {
     });
   }, [navigation]);
 
+  if (isLoading) {
+    console.log('TOUR Before', currentTour);
+    console.log('GUIDE Before', guide);
+    console.log('CUSTOMER Before', customer);
+    return (
+      <View>
+        <Text className='flex items-center justify-center'>
+          Loading...
+        </Text>
+      </View>
+    ); // Nếu isLoading là true, hiển thị thông báo tải
+  }
+
   return (
-    <TourDetailForm tour={currentTour as Tour} guide={guide as User} customer={customer as User} />
+    <TourDetailForm 
+      tour={currentTour as Tour} 
+      guide={guide as User} 
+      customer={customer as User} 
+    />
   );
 };
 

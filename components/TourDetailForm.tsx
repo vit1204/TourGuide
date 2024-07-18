@@ -6,9 +6,11 @@ import { images } from '@/constants';
 import { Tour, User } from '@/types/interface';
 
 const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, customer: User}) => {
-  console.log('currentTour - tour', tour);
-  console.log('guide', guide);
-  console.log('customer', customer);
+
+  console.log('Tour: ', tour);
+  console.log('Guide: ', guide);
+  console.log('Customer: ', customer);
+
   const handleEndTour = () => {
     Alert.alert(
       "End Tour",
@@ -72,66 +74,62 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
 
             <View className="flex-row justify-between mb-4">
               <View className="items-center">
-                <Text className="text-sm">Da Nang, Viet Nam</Text>
-                <Text className="text-2xl font-bold">{}</Text>
+                <Text className="text-sm">Viet Nam</Text>
+                <Text className="text-2xl font-bold">{tour.Tuorlocation[0]}</Text>
               </View>
               <FontAwesome name="arrow-right" size={24} color="black" />
               <View className="items-center">
-                <Text className="text-sm">Da Nang, Viet Nam</Text>
-                <Text className="text-2xl font-bold">{}</Text>
+                <Text className="text-sm">Viet Nam</Text>
+                <Text className="text-2xl font-bold">{tour.Tuorlocation[1]}</Text>
               </View>
             </View>
 
-            <View className="items-center mb-4">
-              <Text className="text-base">Date</Text>
-              <Text className="text-lg font-bold">{new Date(tour.startTime).toDateString()}</Text>
-            </View>
 
             <View className="flex-row justify-between mb-4">
               <View className="items-center">
-                <Text className="text-base">Start</Text>
-                <Text className="text-lg font-bold">{new Date(tour.startTime).toLocaleTimeString()}</Text>
+                <Text className="text-xl font-bold">Start</Text>
+                <Text className="text-lg">{new Date(tour.startTime).toLocaleTimeString()}</Text>
+                <Text className="text-base">{new Date(tour.startTime).toDateString()}</Text>
               </View>
               <View className="items-center">
-                <Text className="text-base">End</Text>
-                <Text className="text-lg font-bold">{new Date(tour.endTime).toLocaleTimeString()}</Text>
+                <Text className="text-xl font-bold">End</Text>
+                <Text className="text-lg">{new Date(tour.endTime).toLocaleTimeString()}</Text>
+                <Text className="text-base">{new Date(tour.startTime).toDateString()}</Text>
               </View>
             </View>
 
-            <View className="items-center mb-4">
-              <Text className="text-2xl font-bold">Price</Text>
-              <Text className="text-3xl font-bold">130.000 vnd</Text>
+            <View className="items-center flex-row mt-5">
+              <Text className="text-2xl font-bold">Price:   </Text>
+              <Text className="text-2xl font-bold">{tour.price.toLocaleString('vi-VN')} VND</Text>
             </View>
           </View>
 
-          <View className="flex-row justify-around w-4/5 mt-10">
-            <TouchableOpacity className="bg-red-200 p-4 rounded-full w-2/5 items-center">
-              <Text className="text-red-700 font-bold text-lg">REPORT</Text>
-            </TouchableOpacity>
-            {/* {tour.status === 'activity' && (
-            <View className="flex-row justify-around w-4/5 mt-10">
-              <TouchableOpacity 
-                className="bg-green-200 p-4 rounded-full w-2/5 items-center"
-                onPress={handleEndTour}
-              >
-                <Text className="text-green-700 font-bold text-lg">END</Text>
+          <View className="flex-row justify-between w-11/12 mt-10 space-x-3">
+              <TouchableOpacity className="bg-red-200 py-6 px-3 rounded-lg flex-1 items-center border border-red-300 shadow-sm active:bg-red-300">
+                  <Text className="text-red-700 font-bold text-lg">REPORT</Text>
               </TouchableOpacity>
-            </View>
-          )}
 
-          {tour.status === 'upcoming' && (
-            <View className="flex-row justify-around w-4/5 mt-10">
-              <TouchableOpacity 
-                className="bg-blue-200 p-4 rounded-full w-2/5 items-center"
-                onPress={handleCancelTour}
-              >
-                <Text className="text-blue-700 font-bold text-lg">CANCEL</Text>
+              {tour.status === 'activity' && (
+                  <TouchableOpacity
+                      className="bg-green-200 py-6 px-3 rounded-lg flex-1 items-center border border-green-300 shadow-sm active:bg-green-300"
+                      onPress={handleEndTour}
+                  >
+                      <Text className="text-green-700 font-bold text-lg">END</Text>
+                  </TouchableOpacity>
+              )}
+
+              {tour.status === 'upcoming' && (
+                  <TouchableOpacity
+                      className="bg-blue-200 py-6 px-3 rounded-lg flex-1 items-center border border-blue-300 shadow-sm active:bg-blue-300"
+                      onPress={handleCancelTour}
+                  >
+                      <Text className="text-blue-700 font-bold text-lg">CANCEL</Text>
+                  </TouchableOpacity>
+              )}
+
+              <TouchableOpacity className="bg-yellow-200 py-6 px-3 rounded-lg flex-1 items-center border border-yellow-300 shadow-sm active:bg-yellow-300">
+                  <Text className="text-yellow-700 font-bold text-lg">COMMENT</Text>
               </TouchableOpacity>
-            </View>
-          )} */}
-            <TouchableOpacity className="bg-yellow-200 p-4 rounded-full w-2/5 items-center">
-              <Text className="text-yellow-700 font-bold text-lg">COMMENT</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -140,23 +138,27 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
             <Text className="text-2xl font-bold mb-4">Tour Guide Details</Text>
             <View className="mb-4">
               <Text className="text-base font-semibold">Name</Text>
-              <Text>Ho Thanh Tien</Text>
+              <Text>{guide.fullName}</Text>
+            </View>
+            <View className="mb-4">
+              <Text className="text-base font-semibold">Age</Text>
+              <Text>{guide.age}</Text>
             </View>
             <View className="mb-4">
               <Text className="text-base font-semibold">Gender</Text>
-              <Text>Male</Text>
+              <Text>{guide.gender === 'nam' ? 'Male' : 'Female' }</Text>
             </View>
             <View className="mb-4">
               <Text className="text-base font-semibold">Phone Number</Text>
-              <Text>+84 123 456 789</Text>
+              <Text>{guide.phoneNumber}</Text>
             </View>
             <View className="mb-4">
               <Text className="text-base font-semibold">Email</Text>
-              <Text>guide@example.com</Text>
+              <Text>{guide.email}</Text>
             </View>
             <View className="mb-4">
-              <Text className="text-base font-semibold">Experience</Text>
-              <Text>5 years</Text>
+              <Text className="text-base font-semibold">Hometown</Text>
+              <Text>{guide.hometown}</Text>
             </View>
           </View>
 
@@ -164,34 +166,34 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
             <Text className="text-2xl font-bold mb-4">Customer Details</Text>
             <View className="mb-4">
               <Text className="text-base font-semibold">Name</Text>
-              <Text>Viet Nguyen</Text>
+              <Text>{customer.fullName}</Text>
             </View>
             <View className="mb-4">
-              <Text className="text-base font-semibold">Date of Birth</Text>
-              <Text>01/01/2000</Text>
+              <Text className="text-base font-semibold">Age</Text>
+              <Text>{customer.age}</Text>
             </View>
             <View className="mb-4">
               <Text className="text-base font-semibold">Gender</Text>
-              <Text>Male</Text>
-            </View>
-            <View className="mb-4">
-              <Text className="text-base font-semibold">Nationality</Text>
-              <Text>Vietnamese</Text>
-            </View>
-            <View className="mb-4">
-              <Text className="text-base font-semibold">Language</Text>
-              <Text>Vietnamese</Text>
+              <Text>{customer.gender === 'nam' ? 'Male' : 'Female' }</Text>
             </View>
             <View className="mb-4">
               <Text className="text-base font-semibold">Phone Number</Text>
-              <Text>+84 123 456 789</Text>
+              <Text>{customer.phoneNumber}</Text>
+            </View>
+            <View className="mb-4">
+              <Text className="text-base font-semibold">Email</Text>
+              <Text>{customer.email}</Text>
+            </View>
+            <View className="mb-4">
+              <Text className="text-base font-semibold">Hometown</Text>
+              <Text>{customer.hometown}</Text>
             </View>
           </View>
 
           <View className="bg-white shadow-lg w-11/12 p-8 rounded-lg border-gray-700 border-2 mt-6">
             <Text className="text-2xl font-bold mb-4">Tour Description</Text>
             <Text className="text-base">
-              This tour takes you through the beautiful sights of Da Nang. Starting from Son Tra, the tour covers various locations including Location 1, Location 2, and Location 3. Enjoy the scenic beauty and explore the culture and history of each spot. The tour is designed for adventure seekers and offers a mix of excitement and relaxation.
+              {tour.schedule}
             </Text>
           </View>
         </View>
