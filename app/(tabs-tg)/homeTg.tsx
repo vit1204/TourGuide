@@ -7,19 +7,32 @@ import { images } from '@/constants'
 import TourItem from '@/components/TourItem';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { User } from '@/types/interface';
+import { Tour, User } from '@/types/interface';
+import { getAllTourByGuideId } from '@/config/authApi';
 
 const HomeTg = () => {
 
   const [user, setUser] = useState<User | null>(null);
+  const [tours, setTours] = useState<Tour[]>([]);
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
+    //Get detail ìnfo of tour guide
     const fetchUser = async () => {
       try {
         const userData = await AsyncStorage.getItem('user');
         if (userData) {
           setUser(JSON.parse(userData) as User);
+          
+          try {
+            const data = await getAllTourByGuideId(user?._id as string);
+            //console.log(data);
+            setTours(data.Tour);
+
+            await AsyncStorage.setItem('tours', JSON.stringify(data.Tour));
+          } catch (error) {
+            console.error('Error fetching tour data', error);
+          }
         } else {
           console.log('No user data found');
         }
@@ -28,8 +41,8 @@ const HomeTg = () => {
       }
     };
     fetchUser();
-
-    const updateDate = () => {
+    // update Time now
+    const updateDate = async () => {
       const date = new Date();
       const options: Intl.DateTimeFormatOptions = {
         weekday: 'long',
@@ -44,6 +57,29 @@ const HomeTg = () => {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  //useEffect(() => {
+  //   // Get all tour of tour guide
+  //   const getAllTour = async () => {
+  //     try {
+  //       console.log('hello');
+  //       const data = await getAllTourByGuideId(user?._id as string);
+  //       console.log(data);
+  //       setTours(data.Tour);
+  //       await AsyncStorage.setItem('tours', JSON.stringify(data.Tour));
+        
+  //     } catch (error) {
+  //       console.error('Error fetching tour data', error);
+  //     }
+  //   }
+  //  getAllTour();
+  // },[]);
+
+  //console.log('All Tour', tours);
+
+  const activeTours = tours.filter(tour => tour.status === 'activity');
+  console.log('ACTIVE TOUR: ', activeTours);
+
 
   if (!user) {
     return <Text>Loading...</Text>;
@@ -85,7 +121,11 @@ const HomeTg = () => {
               <Text className="text-blue_text font-bold text-center">Today: {currentDate}</Text>
             </Text>
 
-            <TourItem />
+            {activeTours.length > 0 ? (
+              activeTours.map(tour => <TourItem key={tour._id} tour={tour} />)
+            ) : (
+              <Text>No active tours</Text>
+            )}
           </View>
 
           {/* Mục My Trips */}

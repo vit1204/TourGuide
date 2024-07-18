@@ -1,10 +1,52 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '@/constants';
+import { Tour, User } from '@/types/interface';
 
-const TourDetailForm = () => {
+const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, customer: User}) => {
+  console.log('currentTour - tour', tour);
+  console.log('guide', guide);
+  console.log('customer', customer);
+  const handleEndTour = () => {
+    Alert.alert(
+      "End Tour",
+      "Are you sure you want to end this tour?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            // Handle ending the tour
+          }
+        }
+      ]
+    );
+  };
+
+  const handleCancelTour = () => {
+    Alert.alert(
+      "Cancel Tour",
+      "Are you sure you want to cancel this tour?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            // Handle cancelling the tour
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white h-full" edges={['right', 'bottom', 'left']}>
 
@@ -19,40 +61,40 @@ const TourDetailForm = () => {
             <View className="flex-row justify-between mb-4">
               <View className="items-center">
                 <Text className="text-base font-semibold">Tour guide</Text>
-                <Text>Ho Thanh Tien</Text>
+                <Text>{guide?.fullName}</Text>
               </View>
 
               <View className="items-center">
                 <Text className="text-base font-semibold">Customer</Text>
-                <Text>Viet Nguyen</Text>
+                <Text>{customer?.fullName}</Text>
               </View>
             </View>
 
             <View className="flex-row justify-between mb-4">
               <View className="items-center">
                 <Text className="text-sm">Da Nang, Viet Nam</Text>
-                <Text className="text-2xl font-bold">Son Tra</Text>
+                <Text className="text-2xl font-bold">{}</Text>
               </View>
               <FontAwesome name="arrow-right" size={24} color="black" />
               <View className="items-center">
                 <Text className="text-sm">Da Nang, Viet Nam</Text>
-                <Text className="text-2xl font-bold">Son Tra</Text>
+                <Text className="text-2xl font-bold">{}</Text>
               </View>
             </View>
 
             <View className="items-center mb-4">
               <Text className="text-base">Date</Text>
-              <Text className="text-lg font-bold">July, 07</Text>
+              <Text className="text-lg font-bold">{new Date(tour.startTime).toDateString()}</Text>
             </View>
 
             <View className="flex-row justify-between mb-4">
               <View className="items-center">
-                <Text className="text-base">From</Text>
-                <Text className="text-lg font-bold">8:00 am</Text>
+                <Text className="text-base">Start</Text>
+                <Text className="text-lg font-bold">{new Date(tour.startTime).toLocaleTimeString()}</Text>
               </View>
               <View className="items-center">
-                <Text className="text-base">To</Text>
-                <Text className="text-lg font-bold">9:00 am</Text>
+                <Text className="text-base">End</Text>
+                <Text className="text-lg font-bold">{new Date(tour.endTime).toLocaleTimeString()}</Text>
               </View>
             </View>
 
@@ -66,6 +108,27 @@ const TourDetailForm = () => {
             <TouchableOpacity className="bg-red-200 p-4 rounded-full w-2/5 items-center">
               <Text className="text-red-700 font-bold text-lg">REPORT</Text>
             </TouchableOpacity>
+            {/* {tour.status === 'activity' && (
+            <View className="flex-row justify-around w-4/5 mt-10">
+              <TouchableOpacity 
+                className="bg-green-200 p-4 rounded-full w-2/5 items-center"
+                onPress={handleEndTour}
+              >
+                <Text className="text-green-700 font-bold text-lg">END</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {tour.status === 'upcoming' && (
+            <View className="flex-row justify-around w-4/5 mt-10">
+              <TouchableOpacity 
+                className="bg-blue-200 p-4 rounded-full w-2/5 items-center"
+                onPress={handleCancelTour}
+              >
+                <Text className="text-blue-700 font-bold text-lg">CANCEL</Text>
+              </TouchableOpacity>
+            </View>
+          )} */}
             <TouchableOpacity className="bg-yellow-200 p-4 rounded-full w-2/5 items-center">
               <Text className="text-yellow-700 font-bold text-lg">COMMENT</Text>
             </TouchableOpacity>

@@ -49,4 +49,29 @@ export const saveUserData = async (user: User) => {
   }
 }
 
+export const register = async (user: User) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/register`, user);
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Register failed');
+  }
+}
+
+export const getAllTourByGuideId = async (userId: string) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.get(`${BASE_URL}/tour/getAllTourByGuideId/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get all tour failed');
+  }
+}
+
 // axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};
