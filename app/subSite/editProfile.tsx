@@ -82,6 +82,9 @@ const EditProfileScreen = () => {
       return;
     }
 
+    // Chỉnh sửa gender trước khi lưu
+    form.gender = form.gender === 'Male' ? 'nam' : 'nu';
+
     // Lưu thông tin người dùng vào cơ sở dữ liệu
     try {
       await saveUserData(form);
@@ -150,16 +153,16 @@ const EditProfileScreen = () => {
           <View className='flex flex-row justify-around'>
             <RadioCheck
               title='Male'
-              onChange={(e) => setForm({ ...form, gender: e })}
+              onChange={(e) => setForm({ ...form, gender: 'nam' })}
               value='Male'
-              selectedValue={form.gender}
+              selectedValue={form.gender === 'nam' ? 'Male' : 'Female'}
             />
 
             <RadioCheck
               title='Female'
-              onChange={(e) => setForm({ ...form, gender: e })}
+              onChange={(e) => setForm({ ...form, gender: 'nu' })}
               value='Female'
-              selectedValue={form.gender}
+              selectedValue={form.gender === 'nu' ? 'Female' : 'Male'}
             />
           </View>
 
