@@ -7,17 +7,25 @@ import { images } from '@/constants'
 import TourItem from '@/components/TourItem';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { User } from '@/types/interface';
 
 const HomeTg = () => {
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await AsyncStorage.getItem('user');
-      console.log("USER:", user);
-      setUser(JSON.parse(userData as string));
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          setUser(JSON.parse(userData) as User);
+        } else {
+          console.log('No user data found');
+        }
+      } catch (error) {
+        console.error('Error fetching user data', error);
+      }
     };
     fetchUser();
 
@@ -31,7 +39,6 @@ const HomeTg = () => {
       };
       setCurrentDate(date.toLocaleDateString('en-US', options));
     };
-
     updateDate();
     const intervalId = setInterval(updateDate, 1000 * 60); // Update every minute
 
@@ -58,19 +65,15 @@ const HomeTg = () => {
 
             <View className="mb-4 flex-col items-center mr-2">
               <Text className="text-black text-base mt-4">Welcome Back</Text>
-              <Text className="text-xl text-blue_text font-extrabold">{(user as any)?.userName}</Text>
+              <Text className="text-lg text-blue_text font-extrabold">{user?.fullName}</Text>
             </View>
           </View>
         </View>
 
         <View className='flex-col px-4'>
           <View className='flex-col items-center mb-6 mt-10'>
-            <Text className="text-5xl font-extrabold">Hi, {user.userName}!</Text>
-            <Text className="text-gray-500 text-lg">#{user.id}</Text>
-             {/*
-            <Text className="text-4xl font-bold mt-2">10,500</Text>
-            <Text className="text-gray-500 text-lg">Current Points</Text>
-              */}
+            <Text className="text-4xl font-extrabold">Hi, {user.userName}!</Text>
+            <Text className="text-gray-500 text-lg">#{user.userName}</Text>
           </View>
           
           <View className="bg-white rounded-lg shadow-md p-2 mb-6">

@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Link, router } from "expo-router";
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { login } from '../../config/authApi';
+import { login, getUserById } from '../../config/authApi';
+import { jwtDecode } from 'jwt-decode';
 
 
 import FormField from '../../components/FormField'
@@ -18,9 +19,15 @@ export default function HomeScreen() {
     const handleLogin = async () => {
       try {
         const data = await login(form.userName, form.password);
-        // Save token and user info as needed, e.g., using AsyncStorage
         await AsyncStorage.setItem('authToken', data.token);
-        await AsyncStorage.setItem('user', JSON.stringify(data));
+
+        // Decode token để lấy userId
+        const decodedToken: any = jwtDecode(data.token);
+        const userId = decodedToken.id;
+
+         // Gọi API để lấy thông tin người dùng
+        const userInfo = await getUserById(userId);
+        await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
   
         if (data.role === 'user') {
           router.replace('/home');

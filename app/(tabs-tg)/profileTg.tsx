@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from '@/types/interface';
 
 const TourGuideProfile = () => {
-  const [tourGuide, setTourGuide] = useState({
-    avatar: 'https://via.placeholder.com/150', // Ảnh đại diện mặc định
-    fullName: 'Ho Thanh Tien',
-    phoneNumber: '+84 123 456 789',
-    email: 'hothanhtien@gmail.com',
-    language: 'Tiếng Việt, English',
-    gender: 'Nam',
-    hometown: 'Quảng Bình',
-    interests: 'Du lịch, Ẩm thực, Văn hóa'
-  });
+  //avatar: 'https://via.placeholder.com/150', // Ảnh đại diện mặc định
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          setUser(JSON.parse(userData) as User);
+        } else {
+          console.log('No user data found');
+        }
+      } catch (error) {
+        console.error('Error fetching user data', error);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  if (!user) {
+    return (
+      <View className='flex items-center justify-center'>
+        <Text className='text-xl text-black'>Loading...</Text>
+      </View>
+    );
+  }
+
+  const languages = Array.isArray(user.languages) ? user.languages.join(', ') : user.languages;
+  const hobbies = Array.isArray(user.hobbies) ? user.hobbies.join(', ') : user.hobbies;
 
   const handleEditProfile = () => {
     router.push('../subSite/editProfile');
@@ -26,11 +46,11 @@ const TourGuideProfile = () => {
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <View className="items-center mb-8">
           <Image
-            source={{ uri: tourGuide.avatar }}
+            source={{ uri: user.avatar }}
             className="w-24 h-24 rounded-full mb-4"
           />
-          <Text className="text-2xl font-bold mb-2">{tourGuide.fullName}</Text>
-          <Text className="text-base text-gray-600 mb-4">{tourGuide.hometown}</Text>
+          <Text className="text-2xl font-bold mb-2">{user.fullName}</Text>
+          <Text className="text-base text-gray-800 mb-4">{user.hometown}</Text>
           <View className="flex-row items-center mb-4">
             <FontAwesome name="star" size={24} color="orange" />
             <Text className="text-lg font-bold ml-2">4.8</Text>
@@ -38,29 +58,29 @@ const TourGuideProfile = () => {
           </View>
         </View>
 
-        <View className="mb-4">
-          <Text className="text-lg text-black font-Nbold mb-1">Phone:</Text>
-          <Text className="text-base text-gray-600">{tourGuide.phoneNumber}</Text>
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-10">Phone:</Text>
+          <Text className="text-base text-gray-600">{user.phoneNumber}</Text>
         </View>
 
-        <View className="mb-4">
-          <Text className="text-lg text-black font-Nbold mb-1">Email:</Text>
-          <Text className="text-base text-gray-600">{tourGuide.email}</Text>
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-10">Email:</Text>
+          <Text className="text-base text-gray-600">{user.email}</Text>
         </View>
 
-        <View className="mb-4">
-          <Text className="text-lg text-black font-Nbold mb-1">Language:</Text>
-          <Text className="text-base text-gray-600">{tourGuide.language}</Text>
+        <View className="mb-4  flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-5">Language:</Text>
+          <Text className="text-base text-gray-600">{languages}</Text>
         </View>
 
-        <View className="mb-4">
-          <Text className="text-lg text-black font-Nbold mb-1">Gender:</Text>
-          <Text className="text-base text-gray-600">{tourGuide.gender}</Text>
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-10">Gender:</Text>
+          <Text className="text-base text-gray-600">{user.gender}</Text>
         </View>
 
-        <View className="mb-4">
-          <Text className="text-lg text-black font-Nbold mb-1">Interests:</Text>
-          <Text className="text-base text-gray-600">{tourGuide.interests}</Text>
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-5">Interests:</Text>
+          <Text className="text-base text-gray-600">{hobbies}</Text>
         </View>
 
         <TouchableOpacity

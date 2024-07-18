@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import FormFieldProfile from '@/components/FormFieldProfile';
-
 import { fetchHometowns, fetchLanguages } from '@/config/fetchSubInfo';
 import RadioCheck from '@/components/RadioCheck';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from '@/types/interface';
+import { saveUserData } from '@/config/authApi';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
 
-  const [form, setForm] = useState({
-    avatar: 'https://via.placeholder.com/150',
-    fullname: 'Nguyen Van A',
-    phone: '+ 84 123-456-789',
-    email: 'nguyenvana@example.com',
-    language: 'Vietnamese',
-    gender: 'Female',
-    hometown: 'Da Nang, Vietnam',
-    interests: 'Traveling, Cooking'
-  });
+  const [form, setForm] = useState<User | null>(null);
 
   const [languages, setLanguages] = useState([]);
   const [hometowns, setHometowns] = useState([]);
@@ -33,6 +25,11 @@ const EditProfileScreen = () => {
   
       const languagesData = await fetchLanguages();
       setLanguages(languagesData);
+
+      const userData = await AsyncStorage.getItem('user');
+      if (userData) {
+        setForm(JSON.parse(userData));
+      }
     }
     fetchData();
   }, []);
@@ -45,7 +42,7 @@ const EditProfileScreen = () => {
     });
 
     if (!result.canceled) {
-      setForm({ ...form, avatar: result.assets[0].uri });
+      setForm({ ...form, avatar: result.assets[0].uri } as User);
     }
   };
 
@@ -68,10 +65,14 @@ const EditProfileScreen = () => {
   };
 
   const saveChanges = async () => {
-    const { fullname, phone, email, language, gender, hometown, interests } = form;
+    if (!form) {
+      return;
+    }
+
+    const { fullName, phoneNumber, email, languages, gender, hometown, hobbies } = form;
 
     // Kiểm tra thông tin người dùng
-    if (!fullname.trim() || !phone.trim() || !email.trim() || !language.trim() || !gender.trim() || !hometown.trim() || !interests.trim()) {
+    if (!fullName.trim() || !phoneNumber.trim() || !email.trim() || !languages.length || !gender.trim() || !hometown.trim() || !hobbies.length) {
       Alert.alert('Error', 'Please fill in all the fields');
       return;
     }
@@ -81,8 +82,24 @@ const EditProfileScreen = () => {
       return;
     }
 
-    // Lưu thông tin người dùng
-    navigation.goBack();
+    // Lưu thông tin người dùng vào cơ sở dữ liệu
+    try {
+      await saveUserData(form);
+      await AsyncStorage.setItem('user', JSON.stringify(form));
+      Alert.alert('Success', 'Profile updated successfully');
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error saving user data', error);
+      Alert.alert('Error', 'Failed to update profile');
+    }
+  };
+
+  if (!form) {
+    return (
+      <View className='flex items-center justify-center'>
+        <Text className='text-xl text-black'>Loading...</Text>
+      </View>
+    );
   }
 
   return (
@@ -95,18 +112,18 @@ const EditProfileScreen = () => {
         <View className="mb-4">
           <FormFieldProfile
             title="Fullname"
-            value={form.fullname}
+            value={form.fullName}
             placeholder="Enter your fullname"
-            handleChangeText={(text) => setForm({ ...form, fullname: text })}
+            handleChangeText={(text) => setForm({ ...form, fullName: text })}
             otherStyles={''}
             secureTextEntry={false}         
           />
 
           <FormFieldProfile
             title="Phone"
-            value={form.phone}
+            value={form.phoneNumber}
             placeholder="Enter your phone number"
-            handleChangeText={(text) => setForm({ ...form, phone: text })}
+            handleChangeText={(text) => setForm({ ...form, phoneNumber: text })}
             otherStyles={'mt-5'}
             secureTextEntry={false}          
           />
@@ -122,14 +139,14 @@ const EditProfileScreen = () => {
 
           <FormFieldProfile
             title="Language"
-            value={form.language}
+            value={form.languages.join(', ')}
             placeholder="Enter your language"
-            handleChangeText={(text) => setForm({ ...form, language: text })}
+            handleChangeText={(text) => setForm({ ...form, languages: text.split(',').map(lang => lang.trim()) })}
             otherStyles={'mt-5'}
             secureTextEntry={false}
           />
 
-          <Text className="text-lg text-black font-Nbold">Gender:</Text>
+          <Text className="text-lg text-black font-Nbold mt-5">Gender:</Text>
           <View className='flex flex-row justify-around'>
             <RadioCheck
               title='Male'
@@ -157,9 +174,9 @@ const EditProfileScreen = () => {
 
           <FormFieldProfile
             title="Interests"
-            value={form.interests}
+            value={form.hobbies.join(', ')}
             placeholder="Enter your interests"
-            handleChangeText={(text) => setForm({ ...form, interests: text })}
+            handleChangeText={(text) => setForm({ ...form, hobbies: text.split(',').map(hobby => hobby.trim()) })}
             otherStyles={'mt-5'}
             secureTextEntry={false}          
           />
