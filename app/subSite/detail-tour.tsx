@@ -13,6 +13,8 @@ const TourDetail = () => {
   const [customer, setCustomer] = useState<User | null>(null);
   const [guide, setGuide] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingGuide, setIsLoadingGuide] = useState(true);
+  const [isLoadingCustomer, setIsLoadingCustomer] = useState(true);
 
   useEffect(() => {
     const getCurrentTour = async () => {
@@ -45,6 +47,8 @@ const TourDetail = () => {
         }
       } catch (error) {
         console.error('Error getting guide data', error);
+      } finally {
+        setIsLoadingGuide(false); //Sau khi xử lý dữ liệu, set isLoadingGuide thành false
       }
     };
 
@@ -66,6 +70,8 @@ const TourDetail = () => {
         }
       } catch (error) {
         console.error('Error getting customer data', error);
+      } finally {
+        setIsLoadingCustomer(false); //Sau khi xử lý dữ liệu, set isLoadingCustomer thành false
       }
     };
 
@@ -73,8 +79,6 @@ const TourDetail = () => {
       getCurrentCustomer();
     }
   }, [currentTour]);
-
-  
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -89,12 +93,9 @@ const TourDetail = () => {
     });
   }, [navigation]);
 
-  if (isLoading) {
-    console.log('TOUR Before', currentTour);
-    console.log('GUIDE Before', guide);
-    console.log('CUSTOMER Before', customer);
+  if (isLoading || isLoadingGuide || isLoadingCustomer) {
     return (
-      <View>
+      <View className='h-full w-full flex items-center justify-center'>
         <Text className='flex items-center justify-center'>
           Loading...
         </Text>

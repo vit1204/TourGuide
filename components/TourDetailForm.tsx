@@ -4,12 +4,10 @@ import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '@/constants';
 import { Tour, User } from '@/types/interface';
+import * as Location from 'expo-location';
+import { reportTour } from '@/utils/reportTour';
 
 const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, customer: User}) => {
-
-  console.log('Tour: ', tour);
-  console.log('Guide: ', guide);
-  console.log('Customer: ', customer);
 
   const handleEndTour = () => {
     Alert.alert(
@@ -48,6 +46,29 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
       ]
     );
   };
+
+  const handleReportTour = () => {
+    Alert.alert(
+      "Report Tour",
+      "Are you sure you want to report this tour?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            try {
+              await reportTour(tour);
+            } catch (error) {
+              console.error('Error reporting tour:', error);
+            }
+          }
+        }
+      ]
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white h-full" edges={['right', 'bottom', 'left']}>
@@ -105,7 +126,10 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
           </View>
 
           <View className="flex-row justify-between w-11/12 mt-10 space-x-3">
-              <TouchableOpacity className="bg-red-200 py-6 px-3 rounded-lg flex-1 items-center border border-red-300 shadow-sm active:bg-red-300">
+              <TouchableOpacity 
+                className="bg-red-200 py-6 px-3 rounded-lg flex-1 items-center border border-red-300 shadow-sm active:bg-red-300"
+                onPress={handleReportTour}
+              >
                   <Text className="text-red-700 font-bold text-lg">REPORT</Text>
               </TouchableOpacity>
 
