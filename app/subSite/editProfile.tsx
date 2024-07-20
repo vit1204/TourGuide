@@ -1,34 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import FormFieldProfile from '@/components/FormFieldProfile';
-import { fetchHometowns, fetchLanguages } from '@/config/fetchSubInfo';
 import RadioCheck from '@/components/RadioCheck';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/types/interface';
-import { saveUserData } from '@/config/authApi';
+import { saveUserData, uploadImage } from '@/config/authApi';
+import CustomButton from '@/components/CustomButton';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
 
   const [form, setForm] = useState<User | null>(null);
-
-  const [languages, setLanguages] = useState([]);
-  const [hometowns, setHometowns] = useState([]);
+  const [initialAvatar, setInitialAvatar] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      const hometownsData = await fetchHometowns();
-      setHometowns(hometownsData);
-  
-      const languagesData = await fetchLanguages();
-      setLanguages(languagesData);
 
       const userData = await AsyncStorage.getItem('user');
       if (userData) {
-        setForm(JSON.parse(userData));
+        const user = JSON.parse(userData) as User;
+        setForm(user);
+        setInitialAvatar(user.avatar);
       }
     }
     fetchData();
@@ -41,7 +36,7 @@ const EditProfileScreen = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setForm({ ...form, avatar: result.assets[0].uri } as User);
     }
   };
@@ -69,7 +64,7 @@ const EditProfileScreen = () => {
       return;
     }
 
-    const { fullName, phoneNumber, email, languages, gender, hometown, hobbies } = form;
+    const { fullName, phoneNumber, email, languages, gender, hometown, hobbies, avatar } = form;
 
     // Kiểm tra thông tin người dùng
     if (!fullName.trim() || !phoneNumber.trim() || !email.trim() || !languages.length || !gender.trim() || !hometown.trim() || !hobbies.length) {
@@ -82,13 +77,18 @@ const EditProfileScreen = () => {
       return;
     }
 
-    // Chỉnh sửa gender trước khi lưu
-    form.gender = form.gender === 'Male' ? 'nam' : 'nu';
-
     // Lưu thông tin người dùng vào cơ sở dữ liệu
     try {
-      await saveUserData(form);
-      await AsyncStorage.setItem('user', JSON.stringify(form));
+      // If avatar has changed, upload the new avatar
+      let avatarUrl = avatar;
+      if (avatar !== initialAvatar) {
+        const uploadResponse = await uploadImage(avatar);
+        avatarUrl = uploadResponse.data.url;
+      }
+
+      // Save user data with the possibly updated avatar URL
+      await saveUserData({ ...form, avatar: avatarUrl });
+      await AsyncStorage.setItem('user', JSON.stringify({ ...form, avatar: avatarUrl }));
       Alert.alert('Success', 'Profile updated successfully');
       navigation.goBack();
     } catch (error) {
@@ -109,7 +109,7 @@ const EditProfileScreen = () => {
     <SafeAreaView className="flex-1 bg-white" edges={['right', 'bottom', 'left']}>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <TouchableOpacity onPress={pickImage} className="items-center mb-4">
-          <Image source={{ uri: form.avatar }} className="w-24 h-24 rounded-full" />
+          <Image source={{ uri: form.avatar }} className="w-24 h-24 rounded-full border-2 border-black-200" />
           <Text className="text-blue-500 text-base mt-2">Change Avatar</Text>
         </TouchableOpacity>
         <View className="mb-4">
@@ -183,13 +183,26 @@ const EditProfileScreen = () => {
             otherStyles={'mt-5'}
             secureTextEntry={false}          
           />
+
+          <View className={`bg-white mt-5`}>
+              <Text className="text-xl font-bold mb-2">About me</Text>
+              <TextInput
+                value={form.describe}
+                placeholder="Say something about you"
+                onChangeText={(text) => setForm({ ...form, describe : text })}
+                className="h-45 px-2 rounded-lg border-2 border-gray-700 shadow-lg text-lg"
+                multiline={true}
+                numberOfLines={6}
+                textAlignVertical="top"
+              />
+          </View>
         </View>
-        <TouchableOpacity
-          className="bg-orange-500 py-3 rounded-full items-center"
-          onPress={saveChanges}
-        >
-          <Text className="text-white font-bold text-lg">Save Changes</Text>
-        </TouchableOpacity>
+        <CustomButton 
+          title='Save Changes'
+          handlePress={saveChanges}
+          containerStyles='mt-5 py-3 rounded-full items-center bg-orange-500'
+          textStyles='text-white font-bold text-lg'
+        />
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/types/interface';
@@ -10,21 +10,25 @@ const TourGuideProfile = () => {
   //avatar: 'https://via.placeholder.com/150', // Ảnh đại diện mặc định
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await AsyncStorage.getItem('user');
-        if (userData) {
-          setUser(JSON.parse(userData) as User);
-        } else {
-          console.log('No user data found');
-        }
-      } catch (error) {
-        console.error('Error fetching user data', error);
+  const fetchUser = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('user');
+      if (userData) {
+        setUser(JSON.parse(userData) as User);
+      } else {
+        console.log('No user data found');
       }
-    };
-    fetchUser();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching user data', error);
+    }
+  };
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUser();
+    }, [])
+  );
 
   if (!user) {
     return (
@@ -82,6 +86,12 @@ const TourGuideProfile = () => {
           <Text className="text-lg text-black font-Nbold mb-1 mr-5">Interests:</Text>
           <Text className="text-base text-gray-600">{hobbies}</Text>
         </View>
+
+        <View className="mb-4 flex-col items-start">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-5">Describe:</Text>
+          <Text className="text-base text-gray-600 flex-1">{user.describe}</Text>
+        </View>
+
 
         <TouchableOpacity
           className="bg-orange-500 py-3 rounded-full items-center"

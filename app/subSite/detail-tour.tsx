@@ -61,7 +61,7 @@ const TourDetail = () => {
     const getCurrentCustomer = async () => {
       try {
         if (currentTour) {
-          const customerData = await getUserById(currentTour.guide_id as string);
+          const customerData = await getUserById(currentTour.user_id as string);
           if (customerData) {
             setCustomer((customerData.userDetial) as User);
           } else {

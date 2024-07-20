@@ -4,8 +4,8 @@ import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '@/constants';
 import { Tour, User } from '@/types/interface';
-import * as Location from 'expo-location';
 import { reportTour } from '@/utils/reportTour';
+import { getUTCDateString } from '@/utils/getUTCDateString';
 
 const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, customer: User}) => {
 
@@ -109,16 +109,34 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
             <View className="flex-row justify-between mb-4">
               <View className="items-center">
                 <Text className="text-xl font-bold">Start</Text>
-                <Text className="text-lg">{new Date(tour.startTime).toLocaleTimeString()}</Text>
-                <Text className="text-base">{new Date(tour.startTime).toDateString()}</Text>
+                <Text className="text-lg">
+                  {new Date(tour.startTime).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    timeZone: 'UTC'
+                  })}</Text>
+                <Text className="text-base">{getUTCDateString(new Date(tour.startTime))}</Text>
               </View>
               <View className="items-center">
                 <Text className="text-xl font-bold">End</Text>
-                <Text className="text-lg">{new Date(tour.endTime).toLocaleTimeString()}</Text>
-                <Text className="text-base">{new Date(tour.startTime).toDateString()}</Text>
+                <Text className="text-lg">
+                  {new Date(tour.endTime).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    timeZone: 'UTC'
+                  })}
+                </Text>
+                <Text className="text-base">{getUTCDateString(new Date(tour.endTime))}</Text>
               </View>
             </View>
 
+            <View className="items-center flex-row mt-5">
+              <Text className="text-xl font-bold">Total Guide:   </Text>
+              <Text className="text-xl ">{tour.numberUser === 1 ? `${tour.numberUser} person` : `${tour.numberUser} people`}</Text>
+            </View>
+            
             <View className="items-center flex-row mt-5">
               <Text className="text-2xl font-bold">Price:   </Text>
               <Text className="text-2xl font-bold">{tour.price.toLocaleString('vi-VN')} VND</Text>

@@ -42,3 +42,15 @@ export interface Tour {
     updatedAt: Date;
     __v: number;
 }
+
+export interface Chat {
+    _id: string,
+    user_id: string,
+    guide_id: string,
+    messages: [],
+    status: string,
+    deleted: boolean,
+    createdAt: Date,
+    updaetAt: Date,
+    __v: number
+}

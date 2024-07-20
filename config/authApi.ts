@@ -1,7 +1,9 @@
 // authApi.ts
-import { User } from '@/types/interface';
+import { Tour, User } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Platform } from 'react-native';
+import FormData from 'form-data';
 
 const BASE_URL = 'http://51.79.173.117:3000/apis';
 
@@ -37,7 +39,20 @@ export const getUserById = async (userId: string) => {
 export const saveUserData = async (user: User) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
-    const response = await axios.put(`${BASE_URL}/user/${user._id}`, user, {
+
+    const dataUserUpdate = {
+      avatar: user.avatar,
+      fullName: user.fullName,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      languages : user.languages,
+      gender: user.gender,
+      hometown: user.hometown,
+      hobbies: user.hobbies,
+      describe: user.describe
+    }
+    
+    const response = await axios.post(`${BASE_URL}/user/update/${user._id}`, dataUserUpdate, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -74,4 +89,93 @@ export const getAllTourByGuideId = async (userId: string) => {
   }
 }
 
+export const getUsersByGuideId = async (guideId: string) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.get(`${BASE_URL}/chat/getChatByuser/${guideId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get users failed');
+  }
+
+}
+
+export const createTour = async (tour : Tour) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const dataUpdate = {
+      userId: tour.user_id,
+      guideId: tour.guide_id,
+      Tuorlocation: tour.Tuorlocation,
+      schedule: tour.schedule,
+      numberUser: tour.numberUser,
+      startTime: tour.startTime.toString(),
+      endTime: tour.endTime.toString(),
+      tourType: tour.tourType,
+      price: tour.price
+    }
+    console.log('DATA Update: ', dataUpdate);
+    const response = await axios.post(`${BASE_URL}/tour/createTour`, dataUpdate, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get users failed');
+  };
+}
+
+export const uploadImage = async (imageUri: string ) => {
+  try {
+    const formData = new FormData();
+    const filename = imageUri.split('/').pop();
+    const match = filename ? /\.(\w+)$/.exec(filename) : null;
+    const type = match ? `image/${match[1]}` : `image`;
+
+    formData.append('images', {
+      uri: imageUri,
+      name: filename,
+      type,
+    });
+
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      const response = await axios.post(`${BASE_URL}/upload/uploadImage`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log('Error in api: ', error);
+      throw new Error((error as any).response?.data?.message || 'Upload image failed');
+    }
+  } catch (error) {
+    console.log('Error in api: ', error);
+    throw new Error('Upload image failed');
+  }
+};
+
+export const getAllChatByUserId = async(userId : string) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.get(`${BASE_URL}/chat/getChatByuser/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get chat failed');
+  }
+}
 // axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};

@@ -8,6 +8,7 @@ import TourItem from '@/components/TourItem';
 import EmptyState from '@/components/EmptyState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Tour } from '@/types/interface';
+import { useFocusEffect } from 'expo-router';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -29,22 +30,24 @@ const MyTrips = () => {
 
   const [tours, setTours] = useState<Tour[]>([]);
 
-  useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const toursData = await AsyncStorage.getItem('tours');
-        if (toursData) {
-          setTours(JSON.parse(toursData));
-        } else {
-          console.log('No tours data found')
-        }
-      } catch (error) {
-        console.error('Error fetching tours from storage', error);
+  const fetchTours = async () => {
+    try {
+      const toursData = await AsyncStorage.getItem('tours');
+      if (toursData) {
+        setTours(JSON.parse(toursData));
+      } else {
+        console.log('No tours data found')
       }
-    };
+    } catch (error) {
+      console.error('Error fetching tours from storage', error);
+    }
+  }
 
-    fetchTours();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTours();
+    }, [])
+  );
 
   const upcomingTours = tours.filter(tour => tour.status === 'upcoming');
   const pastTours = tours.filter(tour => tour.status === 'past');
