@@ -28,6 +28,7 @@ export default function HomeScreen() {
          // Gọi API để lấy thông tin người dùng
         const userInfo = await getUserById(userId);
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
+        await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
     
         if (data.role === 'user') {
           router.replace('/home');

@@ -1,108 +1,164 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
-import { router, usePathname } from 'expo-router';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { View, Text, TextInput, FlatList, Pressable } from 'react-native';
+import { useNavigation, useLocalSearchParams } from 'expo-router';
 import io from 'socket.io-client';
+import { Message } from '@/types/Messages';
+import { getAllChatByUserId } from '@/config/authApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MessageComponent from '@/components/MessageComponent';
+import { MessageComponentProps, Chat } from '@/types/interface';
 
-// Khai báo kiểu dữ liệu cho message
-interface Message {
-  _id: string;
-  senderId: string;
-  message: string;
-  // Các trường dữ liệu khác của message 
-}
+const socket = io('http://51.79.173.117:3000/apis '); 
 
-const socket = io('http://your-backend-url'); // Thay thế bằng địa chỉ backend của bạn
+// Ensure this is the correct backend address
 
-const ChatScreen = () => {
-    const pathname = usePathname();
-    const [chatId, setChatId] = useState('');
-    // const { chatId } = route.params as { chatId: string }; // Lấy chatId từ route params
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [newMessage, setNewMessage] = useState('');
+const ChatScreen: React.FC = () => {
+    const navigation = useNavigation();
+    const { chatId, userName } = useLocalSearchParams();  
+    const [chatMessages, setChatMessages] = useState<MessageComponentProps[]>([]);
+    const [message, setMessage] = useState("");
+    const [user, setUser] = useState("");
 
-    useEffect(() => {
-        // Lấy lịch sử trò chuyện từ API
-        const fetchChatHistory = async () => {
+    const getUsername = async () => {
         try {
-            const response = await fetch(`http://your-backend-url/${chatId}`); // Thay thế bằng API endpoint và chatId
-            const data = await response.json();
-            setMessages(data);
-        } catch (error) {
-            console.error(error);
-        }
-        };
-
-        fetchChatHistory();
-
-        // Lắng nghe sự kiện tin nhắn mới
-        socket.on('new-message', (message: Message) => {
-        // Cập nhật danh sách tin nhắn với tin nhắn mới
-        setMessages((prevMessages) => [...prevMessages, message]);
-        });
-
-        return () => {
-        socket.disconnect();
-        };
-    }, [chatId]);
-
-    const handleSendMessage = async () => {
-        try {
-        // Gửi tin nhắn mới đến server
-        await fetch('http://your-backend-url/send-message', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            chatId,
-            senderId: 'your-user-id', // Thay thế bằng userId của bạn
-            message: newMessage,
-            }),
-        });
-
-        setNewMessage('');
-        } catch (error) {
-        console.error(error);
+            const value = await AsyncStorage.getItem("username");
+            if (value !== null) {
+                setUser(value);
+            }
+        } catch (e) {
+            console.error("Error while loading username!");
         }
     };
 
+    useLayoutEffect(() => {
+        navigation.setOptions({ title: userName as string });
+        getUsername();
+    }, []);
+
+    const fetchChatHistory = async () => {
+        try {
+            const data = await getAllChatByUserId(chatId as string || '');
+            const messages: MessageComponentProps[] = data.allChat.flatMap((chat: Chat) =>
+                chat.messages.map((msg: Message) => ({
+                    item: {
+                        message: msg.text,
+                        user: msg.user_id,
+                        timestamp: { 
+                            hour: new Date(msg.time).getHours().toString().padStart(2, '0'),
+                            mins: new Date(msg.time).getMinutes().toString().padStart(2, '0')
+                        },
+                        chatId: chat._id,
+                        senderId: msg.user_id
+                    },
+                    user: msg.user_id
+                }))
+            );
+
+            setChatMessages(messages);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchChatHistory();
+    }, [chatId]);
+
+    useEffect(() => {
+        socket.on('connect', () => {
+            console.log('Connected to socket server');
+            socket.emit('joinRoom', chatId);
+        });
+
+        socket.on('newMessage', (newMessage: Message) => {
+            const newMsg = {
+                item: {
+                    message: newMessage.text,
+                    user: newMessage.user_id,
+                    timestamp: { 
+                        hour: new Date(newMessage.time).getHours().toString().padStart(2, '0'),
+                        mins: new Date(newMessage.time).getMinutes().toString().padStart(2, '0')
+                    },
+                    chatId,
+                    senderId: newMessage.user_id
+                },
+                user: newMessage.user_id
+            };
+            setChatMessages((prevMessages) => [...prevMessages, newMsg as MessageComponentProps]);
+        });
+
+        return () => {
+            socket.off('newMessage');
+            socket.emit('leaveRoom', chatId);
+        };
+    }, [chatId]);
+
+    const handleNewMessage = () => {
+        if (!message) {
+            return;
+        }
+        const hour = new Date().getHours() < 10 ? `0${new Date().getHours()}` : `${new Date().getHours()}`;
+        const mins = new Date().getMinutes() < 10 ? `0${new Date().getMinutes()}` : `${new Date().getMinutes()}`;
+
+        const newMessage = {
+            chatId,
+            senderId: user,
+            message,
+            time: new Date()
+        };
+
+        // Send message to server via socket
+        socket.emit('sendMessage', newMessage);
+
+        // Update UI immediately
+        setChatMessages((prevMessages) => [
+            ...prevMessages, 
+            {
+                item: {
+                    message,
+                    user,
+                    timestamp: { hour, mins },
+                    chatId,
+                    senderId: user
+                },
+                user: user
+            } as MessageComponentProps
+        ]);
+        setMessage('');
+    };
+
     return (
-        <View style={styles.container}>
-        <FlatList
-            data={messages}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-            <View style={styles.message}>
-                <Text>{item.senderId}: {item.message}</Text>
+        <View className="flex-1">
+            <View className="flex-1 p-4">
+                {chatMessages.length > 0 ? (
+                    <FlatList
+                        data={chatMessages}
+                        renderItem={({ item }) => (
+                            <MessageComponent item={item.item} user={user} />
+                        )}
+                        keyExtractor={(item, index) => `${item.item.chatId}-${index}`}
+                    />
+                ) : (
+                    <Text className="text-center text-gray-500">No messages yet</Text>
+                )}
             </View>
-            )}
-        />
-        <View style={styles.inputContainer}>
-            <TextInput
-            style={styles.input}
-            value={newMessage}
-            onChangeText={setNewMessage}
-            placeholder="Nhập tin nhắn..."
-            />
-            <Button title="Gửi" onPress={handleSendMessage} />
-        </View>
+
+            <View className="flex-row items-center p-4 border-t border-gray-200">
+                <TextInput
+                    className="flex-1 bg-gray-200 p-2 rounded-lg"
+                    value={message}
+                    onChangeText={setMessage}
+                    placeholder="Type a message..."
+                />
+                <Pressable
+                    className="ml-2 p-2 bg-blue-500 rounded-full"
+                    onPress={handleNewMessage}
+                >
+                    <Text className="text-white text-lg">SEND</Text>
+                </Pressable>
+            </View>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  message: {
-    // Áp dụng Tailwind CSS ở đây
-  },
-  inputContainer: {
-    // Áp dụng Tailwind CSS ở đây
-  },
-  input: {
-    // Áp dụng Tailwind CSS ở đây
-  },
-});
 
 export default ChatScreen;

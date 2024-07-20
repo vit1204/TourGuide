@@ -178,4 +178,6 @@ export const getAllChatByUserId = async(userId : string) => {
     throw new Error((error as any).response?.data?.message || 'Get chat failed');
   }
 }
+
+
 // axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};
