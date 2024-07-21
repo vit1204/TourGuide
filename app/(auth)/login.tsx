@@ -1,7 +1,10 @@
-import { Image, StyleSheet, Platform, View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { Image, StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
 import { Link, router } from "expo-router";
 import ParallaxScrollView from '@/components/ParallaxScrollView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { login, getUserById } from '../../config/authApi';
+import { jwtDecode } from 'jwt-decode';
 
 
 import FormField from '../../components/FormField'
@@ -9,25 +12,55 @@ import FormField from '../../components/FormField'
 export default function HomeScreen() {
 
     const [form,setForm] = useState({
-        email: "",
+        userName: "",
         password: ""
     })
+
+    const handleLogin = async () => {
+      try {
+        const data = await login(form.userName, form.password);
+        await AsyncStorage.setItem('authToken', data.token);
+    
+        // Decode token để lấy userId
+        const decodedToken: any = jwtDecode(data.token);
+        const userId = decodedToken.id;
+    
+         // Gọi API để lấy thông tin người dùng
+        const userInfo = await getUserById(userId);
+        await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
+        await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
+    
+        if (data.role === 'user') {
+          router.replace('/home');
+        } else if (data.role === 'guide') {
+          console.log('Vao Tour Guide');
+          router.replace('/homeTg');
+        } else {
+          Alert.alert('Invalid role');
+        }
+      } catch (error: any) {
+        console.log(error);
+        Alert.alert('Login failed', error.message);
+      }
+    };
+    
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#FFA300', dark: '#FFA300' }}
       headerImage={
-       <Text style={{ fontSize:'32px', fontWeight: 'bold' }} >
-        Log in
+       <Text style={{ fontSize:32, fontWeight: 'bold' }} >
+          Log in
        </Text>
       }>
-              <View className='bg-white h-full'  >  
+
+        <View className='bg-white h-full'  >  
           <FormField
-            title="Email"
-            value={form.email}
-            handleChangeText={(e:any) => setForm({ ...form, email: e })}
+            title="userName"
+            value={form.userName}
+            handleChangeText={(e:any) => setForm({ ...form, userName: e })}
             otherStyles="mt-7"
-            keyboardType="email-address"
-            placeholder={"Enter your email"}
+            placeholder={"Enter your userName"}
           />
 
           <FormField
@@ -40,11 +73,13 @@ export default function HomeScreen() {
 
 
           
-           <TouchableOpacity className=" ml-[10px]  w-[95%] rounded-3xl pt-4 pb-4 flex items-center justify-center mt-[30px] bg-primary" >
-
-    <Text className=" text-white text-center font-Nmedium text-[20px] ">Sign In</Text>
-  </TouchableOpacity>
-  <View className="flex justify-center pt-5 flex-row gap-2">
+          <TouchableOpacity className=" ml-[10px]  w-[95%] rounded-3xl pt-4 pb-4 
+                  flex items-center justify-center mt-[30px] bg-primary"
+                      onPress={handleLogin} >
+              <Text className=" text-white text-center font-Nmedium text-[20px] ">Sign In</Text>
+          </TouchableOpacity>
+          
+          <View className="flex justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">
               Don't have an account?
             </Text>

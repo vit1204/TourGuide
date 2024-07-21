@@ -14,6 +14,9 @@ import suitcase from "../assets/icons/suitcase.png"
 import chat from  "../assets/icons/chat.png"
 import calendar from "../assets/icons/calendar.png"
 import search from "../assets/icons/search.png"
+import message from "../assets/icons/message.png"
+import payment from "../assets/icons/payment.png"
+
 export default {
   play,
   bookmark,
@@ -30,5 +33,7 @@ export default {
   suitcase,
   chat,
   calendar,
-  search
+  search,
+  message,
+  payment
 };
