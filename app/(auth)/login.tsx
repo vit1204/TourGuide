@@ -20,13 +20,15 @@ export default function HomeScreen() {
       try {
         const data = await login(form.userName, form.password);
         await AsyncStorage.setItem('authToken', data.token);
+
     
         // Decode token để lấy userId
         const decodedToken: any = jwtDecode(data.token);
         const userId = decodedToken.id;
-    
+
          // Gọi API để lấy thông tin người dùng
         const userInfo = await getUserById(userId);
+        setUser(userInfo.userDetial)
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
         await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
     

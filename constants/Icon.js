@@ -21,7 +21,6 @@ import locate from "../assets/icons/locate.png"
 import minus from "../assets/icons/minus.png"
 import add from "../assets/icons/add.png"
 import message from "../assets/icons/message.png"
-import message from "../assets/icons/message.png"
 import payment from "../assets/icons/payment.png"
 
 export default {

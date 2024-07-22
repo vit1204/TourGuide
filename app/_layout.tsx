@@ -2,32 +2,9 @@ import { router, SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import React, { useEffect, useState } from "react";
 import GlobalProvider from '../context/GlobalProvider';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContainer } from "@react-navigation/native";
 
-SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    const checkToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        if (!token) {
-          router.replace("login");
-        } else {
-          router.replace("home");
-        }
-      } catch (error) {
-        console.error("Error checking token:", error);
-      } finally {
-        setIsReady(true);
-      }
-    };
-
-    checkToken();
-  }, []);
 
   const [fontsLoaded, fontsError] = useFonts({
     "NeueMontreal-Regular": require("../assets/fonts/NeueMontreal-Regular.ttf"),
@@ -40,13 +17,12 @@ const RootLayout = () => {
     if (fontsError) {
       throw fontsError;
     }
-
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontsError]);
 
-  if (!fontsLoaded || !isReady) {
+  if (!fontsLoaded) {
     return null;
   }
 
@@ -65,6 +41,7 @@ const RootLayout = () => {
         <Stack.Screen name="(userTabs)" options={{ headerShown: false }} />
         <Stack.Screen name="Query/query" options={{ headerShown: false }} />
         <Stack.Screen name="Query/id/[id]" options={{ headerShown: false }} />
+        
       </Stack>
     </GlobalProvider>
 

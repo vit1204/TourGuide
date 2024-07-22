@@ -9,9 +9,7 @@ import FormData from 'form-data';
 export const login = async (userName: string, password: string) => {
   try {
 
-
     const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/auth/login`, {
-
       userName,
       password,
     });
@@ -105,7 +103,3 @@ export const getAllTourGuide = async () => {
     throw new Error((error as any).response?.data?.message || 'Get all tour failed');
   }
 }
-
-
-// axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};
-// axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};
