@@ -22,7 +22,7 @@ const TableSearch = () => {
 
   const  [text, setText] = useState('')
 
-  const onChange = (even,selectedDate) => {
+  const onChange = (even:any,selectedDate:Date) => {
     const currentDate = selectedDate || date
     setShow(Platform.OS === 'ios');
 
@@ -32,7 +32,7 @@ const TableSearch = () => {
    let fDate = tempDate.getDate() + "-" + (tempDate.getMonth() + 1) + "-" + tempDate.getFullYear()
     setText(fDate)  
   };
-const onConfirm = (selectedDate) => {
+const onConfirm = (selectedDate:Date) => {
   onChange(null,selectedDate);
   console.log(selectedDate)
 
