@@ -10,6 +10,7 @@ import Videos from "../../constants/video";
 import VideoList from '../../components/VideoList'
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { router } from "expo-router";
+import { User } from "@/types/interface";
 
 
 const TableSearch = () => {
@@ -97,7 +98,7 @@ const Home = () => {
                 <Logo />
                 <View>
                     <Text style={{ fontSize:14 }}> Welcome Back </Text>
-                    <Text style={{ fontSize:24 }} > {user.userName} </Text>
+                    <Text style={{ fontSize:24 }} > {(user as User).userName} </Text>
                 </View>
             </View>
         } >

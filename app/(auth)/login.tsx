@@ -9,6 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import FormField from '../../components/FormField'
 import { useGlobalContext } from '@/context/GlobalProvider';
+import { User } from '@/types/interface';
 
 export default function HomeScreen() {
   const {user,setUser} = useGlobalContext() 
@@ -28,6 +29,7 @@ export default function HomeScreen() {
          // Gọi API để lấy thông tin người dùng
         const userInfo = await getUserById(userId);
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
+        setUser(userInfo.userDetial  as User);
         await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
     
         if (data.role === 'user') {

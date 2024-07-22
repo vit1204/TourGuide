@@ -8,10 +8,7 @@ import FormData from 'form-data';
 
 export const login = async (userName: string, password: string) => {
   try {
-
-
     const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/auth/login`, {
-
       userName,
       password,
     });
@@ -105,6 +102,96 @@ export const getAllTourGuide = async () => {
     throw new Error((error as any).response?.data?.message || 'Get all tour failed');
   }
 }
+
+export const uploadImage = async (imageUri: string ) => {
+  try {
+    const formData = new FormData();
+    const filename = imageUri.split('/').pop();
+    const match = filename ? /\.(\w+)$/.exec(filename) : null;
+    const type = match ? `image/${match[1]}` : `image`;
+
+    formData.append('images', {
+      uri: imageUri,
+      name: filename,
+      type,
+    });
+
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/upload/uploadImage`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log('Error in api: ', error);
+      throw new Error((error as any).response?.data?.message || 'Upload image failed');
+    }
+  } catch (error) {
+    console.log('Error in api: ', error);
+    throw new Error('Upload image failed');
+  }
+};
+
+export const getAllChatByUserId = async(userId : string) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/chat/getChatByuser/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get chat failed');
+  }
+}
+
+export const getUsersByGuideId = async (guideId: string) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/chat/getChatByuser/${guideId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get users failed');
+  }
+}
+
+export const createTour = async (tour : Tour) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const dataUpdate = {
+      userId: tour.user_id,
+      guideId: tour.guide_id,
+      Tuorlocation: tour.Tuorlocation,
+      schedule: tour.schedule,
+      numberUser: tour.numberUser,
+      startTime: tour.startTime.toString(),
+      endTime: tour.endTime.toString(),
+      tourType: tour.tourType,
+      price: tour.price
+    }
+    console.log('DATA Update: ', dataUpdate);
+    const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/tour/createTour`, dataUpdate, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get users failed');
+  };
+}
+
 
 
 // axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};

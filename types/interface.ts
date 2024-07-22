@@ -1,3 +1,4 @@
+import { Message } from "./Messages";
 
 
 export interface User {
