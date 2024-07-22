@@ -51,6 +51,7 @@ const RootLayout = () => {
   }
 
   return (
+
     <GlobalProvider>
       <Stack
         screenOptions={{
@@ -66,6 +67,8 @@ const RootLayout = () => {
         <Stack.Screen name="Query/id/[id]" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
+
+
   );
 };
 

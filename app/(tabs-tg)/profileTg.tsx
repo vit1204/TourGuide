@@ -1,0 +1,107 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import { router, useFocusEffect } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from '@/types/interface';
+
+const TourGuideProfile = () => {
+  //avatar: 'https://via.placeholder.com/150', // Ảnh đại diện mặc định
+  const [user, setUser] = useState<User | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('user');
+      if (userData) {
+        setUser(JSON.parse(userData) as User);
+      } else {
+        console.log('No user data found');
+      }
+    } catch (error) {
+      console.error('Error fetching user data', error);
+    }
+  };
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUser();
+    }, [])
+  );
+
+  if (!user) {
+    return (
+      <View className='flex items-center justify-center'>
+        <Text className='text-xl text-black'>Loading...</Text>
+      </View>
+    );
+  }
+
+  const languages = Array.isArray(user.languages) ? user.languages.join(', ') : user.languages;
+  const hobbies = Array.isArray(user.hobbies) ? user.hobbies.join(', ') : user.hobbies;
+
+  const handleEditProfile = () => {
+    router.push('../subSite/editProfile');
+  };
+
+  return (
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <View className="items-center mb-8">
+          <Image
+            source={{ uri: user.avatar }}
+            className="w-24 h-24 rounded-full mb-4"
+          />
+          <Text className="text-2xl font-bold mb-2">{user.fullName}</Text>
+          <Text className="text-base text-gray-800 mb-4">{user.hometown}</Text>
+          <View className="flex-row items-center mb-4">
+            <FontAwesome name="star" size={24} color="orange" />
+            <Text className="text-lg font-bold ml-2">4.8</Text>
+            <Text className="text-base text-gray-600 ml-1">(230)</Text>
+          </View>
+        </View>
+
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-10">Phone:</Text>
+          <Text className="text-base text-gray-600">{user.phoneNumber}</Text>
+        </View>
+
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-10">Email:</Text>
+          <Text className="text-base text-gray-600">{user.email}</Text>
+        </View>
+
+        <View className="mb-4  flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-5">Language:</Text>
+          <Text className="text-base text-gray-600">{languages}</Text>
+        </View>
+
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-10">Gender:</Text>
+          <Text className="text-base text-gray-600">{user.gender}</Text>
+        </View>
+
+        <View className="mb-4 flex-row items-center">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-5">Interests:</Text>
+          <Text className="text-base text-gray-600">{hobbies}</Text>
+        </View>
+
+        <View className="mb-4 flex-col items-start">
+          <Text className="text-lg text-black font-Nbold mb-1 mr-5">Describe:</Text>
+          <Text className="text-base text-gray-600 flex-1">{user.describe}</Text>
+        </View>
+
+
+        <TouchableOpacity
+          className="bg-orange-500 py-3 rounded-full items-center"
+          onPress={handleEditProfile}
+        >
+          <Text className="text-white font-bold text-lg">Edit Profile</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default TourGuideProfile;

@@ -1,12 +1,17 @@
 // authApi.ts
-import { User } from '@/types/interface';
+import { Tour, User } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Platform } from 'react-native';
+import FormData from 'form-data';
 
 
 export const login = async (userName: string, password: string) => {
   try {
+
+
     const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/auth/login`, {
+
       userName,
       password,
     });
@@ -36,7 +41,20 @@ export const getUserById = async (userId: string) => {
 export const saveUserData = async (user: User) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
-    const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/user/${user._id}`, user, {
+
+    const dataUserUpdate = {
+      avatar: user.avatar,
+      fullName: user.fullName,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      languages : user.languages,
+      gender: user.gender,
+      hometown: user.hometown,
+      hobbies: user.hobbies,
+      describe: user.describe
+    }
+    
+    const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/update/${user._id}`, dataUserUpdate, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -89,4 +107,5 @@ export const getAllTourGuide = async () => {
 }
 
 
+// axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};
 // axios.defaults.headers.common['Authorization'] = Bearer ${localStorage.getItem('authToken')};

@@ -1,4 +1,6 @@
-export default interface User {
+
+
+export interface User {
     _id: string;
     avatar: string;
     fullName: string;
@@ -25,7 +27,8 @@ export default interface User {
     languages: string[];
 }
 
-export  interface Tour {
+export interface Tour {
+
     _id: string;
     user_id: string;
     guide_id: string;
@@ -41,4 +44,33 @@ export  interface Tour {
     createdAt: Date;
     updatedAt: Date;
     __v: number;
+}
+// export interface Message {Cha
+//     _id: string
+//     text: string
+//     time: string
+//     user_id: string
+// }
+
+export interface Chat {
+    _id: string,
+    user_id: string,
+    guide_id: string,
+    messages: Message[],
+    status: string,
+    deleted: boolean,
+    createdAt: Date,
+    updaetAt: Date,
+    __v: number
+}
+
+export interface MessageComponentProps {
+    item: {
+        message: string;
+        user: string;
+        timestamp: { hour: string, mins: string };
+        chatId: string;
+        senderId: string;
+    };
+    user: string;
 }
