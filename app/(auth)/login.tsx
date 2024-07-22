@@ -28,6 +28,7 @@ export default function HomeScreen() {
     
          // Gọi API để lấy thông tin người dùng
         const userInfo = await getUserById(userId);
+        setUser(userInfo.userDetial  as User);
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
         setUser(userInfo.userDetial  as User);
         await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))

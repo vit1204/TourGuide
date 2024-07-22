@@ -6,8 +6,6 @@ import Icon from "@/constants/Icon";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
-import Videos from "../../constants/video";
-import VideoList from '../../components/VideoList'
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { router } from "expo-router";
 import { User } from "@/types/interface";
@@ -104,12 +102,7 @@ const Home = () => {
         } >
                  <View className="h-full bg-white">
                     <TableSearch />
-                      <View className="w-full mt-[30px] flex-1 pt-5 pb-8">
-            <Text className="text-lg font-Nregular text-gray-100 mb-3" >
-                Trending Videos
-            </Text>
-            <VideoList posts={Videos || []} />
-        </View>
+                 
         </View>
         
       
