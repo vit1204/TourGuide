@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { Image, StyleSheet, Platform, View, Text, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { useState } from 'react';
 import { Link, router } from "expo-router";
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -8,14 +8,14 @@ import { jwtDecode } from 'jwt-decode';
 
 
 import FormField from '../../components/FormField'
+import { useGlobalContext } from '@/context/GlobalProvider';
 
 export default function HomeScreen() {
-
+  const {user,setUser} = useGlobalContext() 
     const [form,setForm] = useState({
         userName: "",
         password: ""
     })
-
     const handleLogin = async () => {
       try {
         const data = await login(form.userName, form.password);
@@ -106,3 +106,5 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
+
+

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { Image, StyleSheet, Platform, View, Text, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { useState } from 'react';
 import { Link, router } from "expo-router";
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -6,20 +6,35 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 import FormField from '../../components/FormField'
 import RadioCheck from '@/components/RadioCheck';
+import { register } from '@/config/authApi';
 
 export default function Register() {
 
     const [form,setForm] = useState({
-       username: "",
-       fullname: "",
-      phonenumber: "",
+       userName: "",
+       fullName: "",
+      phoneNumber: "",
       gender: "",
         email: "",
-        password: ""
+        password: "",
+        languages: "",
+        hometown: "",
+        workLocation: "",
+        hobbies: "",
     })
 
-    const handeRegist = () => {
-      console.log(form.gender)
+   async  function handleRegister(){
+     try {
+    
+    
+      const res = await register(form)
+      console.log(res)
+      if(res.status === 200){
+        router.push('/login')
+      }
+     } catch (error) {
+      console.log(error)
+     }
     }
   return (
     <ParallaxScrollView
@@ -33,8 +48,8 @@ export default function Register() {
 
   <FormField
             title="Username"
-            value={form.username}
-            handleChangeText={(e:any) => setForm({ ...form, username: e })}
+            value={form.userName}
+            handleChangeText={(e:any) => setForm({ ...form, userName: e })}
             otherStyles="mt-7"
             
             placeholder={"Enter your username"}
@@ -48,15 +63,15 @@ export default function Register() {
           />
               <FormField
             title="Fullname"
-            value={form.fullname}
-            handleChangeText={(e: any) => setForm({ ...form, fullname: e })}
+            value={form.fullName}
+            handleChangeText={(e: any) => setForm({ ...form, fullName: e })}
             otherStyles="mt-7"
             placeholder={"Enter your fullname"}
           />
           <FormField
             title="Phone number"
-            value={form.phonenumber}
-            handleChangeText={(e: any) => setForm({ ...form, phonenumber: e })}
+            value={form.phoneNumber}
+            handleChangeText={(e: any) => setForm({ ...form, phoneNumber: e })}
             otherStyles="mt-7"
             placeholder={"Enter your phone number"}
           />
@@ -65,10 +80,41 @@ export default function Register() {
             title="Email"
             value={form.email}
             handleChangeText={(e:any) => setForm({ ...form, email: e })}
-            otherStyles="mt-7 mb-7"
+            otherStyles="mt-7 "
             keyboardType="email-address"
             placeholder={"Enter your email"}
           />
+           <FormField
+            title="Languages"
+            value={form.languages}
+            handleChangeText={(e:any) => setForm({ ...form, languages: e })}
+            otherStyles="mt-7 "
+            placeholder={"Enter your languages"}
+          />
+
+           <FormField
+            title="Hometown"
+            value={form.hometown}
+            handleChangeText={(e:any) => setForm({ ...form, hometown: e })}
+            otherStyles="mt-7 "
+            placeholder={"Enter your hometown"}
+          />
+           <FormField
+            title="Hobbies"
+            value={form.hobbies}
+            handleChangeText={(e:any) => setForm({ ...form, hobbies: e })}
+            otherStyles="mt-7"
+            
+            placeholder={"Enter your hobbies"}
+          />
+           <FormField
+            title="Work Location"
+            value={form.workLocation}
+            handleChangeText={(e:any) => setForm({ ...form, workLocation: e })}
+            otherStyles="mt-7 mb-7"
+            placeholder={"Enter your work location"}
+          />
+           
         
   <View className={`space-y-2  `}>
 
@@ -91,7 +137,7 @@ export default function Register() {
         </View>
 
     
-           <TouchableOpacity  className=" ml-[10px]  w-[95%] rounded-3xl pt-4 pb-4 flex items-center justify-center mt-[30px] bg-primary" >
+           <TouchableOpacity onPress={handleRegister}  className=" ml-[10px]  w-[95%] rounded-3xl pt-4 pb-4 flex items-center justify-center mt-[30px] bg-primary" >
 
     <Text className=" text-white text-center font-Nmedium text-[20px] ">Sign up</Text>
   </TouchableOpacity>

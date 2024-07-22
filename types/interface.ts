@@ -1,4 +1,4 @@
-import { Message } from '@/types/Messages'
+
 
 export interface User {
     _id: string;
@@ -28,6 +28,7 @@ export interface User {
 }
 
 export interface Tour {
+
     _id: string;
     user_id: string;
     guide_id: string;

@@ -1,7 +1,7 @@
-import logo from "../assets/images/logo.png";
-import empty from "../assets/images/empty.png"
+import photo from "../assets/images/photo.png";
+import ava from "../assets/images/ava.png";
 
-export default {
-    logo,
-    empty
+export default{
+    photo,
+    ava
 }

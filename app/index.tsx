@@ -3,9 +3,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Image } from "react-native";
 import { Link, router } from "expo-router";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
-   
+
+
+    
   function Navigate(){
     router.navigate("login")
   }

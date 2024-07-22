@@ -43,6 +43,7 @@ export default function ParallaxScrollView({
           scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
         },
       ],
+    zIndex: -1,
       alignItems: 'center',
       justifyContent: 'center',
     };
@@ -59,7 +60,7 @@ export default function ParallaxScrollView({
           ]}>
       {React.cloneElement(headerImage, { className: classStyle })}
         </Animated.View>
-        <View style={styles.content} >{children}</View>
+        <View style={styles.content}>{children}</View>
       </Animated.ScrollView>
     </View>
   );
@@ -67,16 +68,18 @@ export default function ParallaxScrollView({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
+    backgroundColor:'#fff'
   },
   header: {
-    height: 250,
+    height: 200,
     overflow: 'hidden',
   },
   content: {
-    padding: 32,
+  
+ padding: 32,
     gap: 16,
-    overflow: "scroll",
-    backgroundColor: 'white',
+    overflow: "hidden",
+    backgroundColor: 'white'
   },
 });

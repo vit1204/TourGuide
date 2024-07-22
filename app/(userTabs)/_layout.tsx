@@ -1,7 +1,9 @@
 import { Tabs } from "expo-router";
-import { View , Image, ImageSourcePropType, Text} from "react-native";
+import { View , Image, ImageSourcePropType, Text, StyleSheet} from "react-native";
 
 import icons from "../../constants/Icon"
+import { ReactElement, ReactNode } from "react";
+
 
 
 interface TabIconProps {
@@ -20,13 +22,15 @@ const TabIcon = ({ icon, color, name, focused }: TabIconProps) => {
     );
 };
 
+
 const TabsLayout = () => {
     return (
-        <>
-         <Tabs screenOptions={ { tabBarShowLabel: false } } >
-            <Tabs.Screen
+        <Tabs screenOptions={{ tabBarShowLabel: false }}
+        >
+            <Tabs.Screen 
                 name="home"
                 options={{
+                  
                     title: "Home",
                     headerShown: false,
                     tabBarIcon: ({ focused, color, size }) => {
@@ -37,6 +41,7 @@ const TabsLayout = () => {
                        />
                         )         
                     },
+               
                 }}
             />
             <Tabs.Screen name="booked" options={{
@@ -51,6 +56,22 @@ const TabsLayout = () => {
                     )         
                 },
             }} />
+
+             <Tabs.Screen 
+                    name='message'
+                    options={{
+                        title: 'Message',
+                        headerShown: false,
+                        tabBarIcon: ({color, focused}) => (
+                            <TabIcon 
+                                icon={icons.message}
+                                color={color}
+                                name='Message'
+                                focused={focused}
+                            />
+                        )
+                    }}
+                />
              <Tabs.Screen name="profile" options={{
                 title: "Profile",
                 headerShown: false,
@@ -64,7 +85,6 @@ const TabsLayout = () => {
                 },
             }}  />
          </Tabs>
-        </>
     )
 }
 
