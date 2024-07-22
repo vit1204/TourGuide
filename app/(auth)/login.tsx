@@ -61,7 +61,7 @@ export default function HomeScreen() {
 
         <View className='bg-white h-full'  >  
           <FormField
-            title="userName"
+            title="Username"
             value={form.userName}
             handleChangeText={(e:any) => setForm({ ...form, userName: e })}
             otherStyles="mt-7"

@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatComponent from '@/components/ChatComponent';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const socket = io('http://your-backend-url'); // Thay thế bằng địa chỉ backend của bạn
+const socket = io(`${process.env.EXPO_PUBLIC_API_URL}`); // Thay thế bằng địa chỉ backend của bạn
 
 const MessageScreen = () => {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -64,7 +64,7 @@ const MessageScreen = () => {
   return (
     <SafeAreaView className="flex w-full h-full">
       <View className="flex-1 bg-white">
-        <View className="p-4 bg-yellow-500">
+        <View className="p-4 bg-primary_darker">
           <Text className="text-2xl font-bold text-white">Message</Text>
         </View>
 

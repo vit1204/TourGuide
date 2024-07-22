@@ -103,7 +103,7 @@ const TourItem = ({tour}: {tour: Tour}) => {
                     </View>
 
                     <View>
-                        <Text className="text-lg font-bold text-center text-blue_text">{tour.price.toLocaleString('vi-VN')}</Text>
+                        <Text className="text-lg font-bold text-center text-blue_text">{Math.floor(tour.price).toLocaleString('vi-VN')}</Text>
                     </View>
                 </View>
 

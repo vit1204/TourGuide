@@ -177,7 +177,7 @@ export const createTour = async (tour : Tour) => {
       startTime: tour.startTime.toString(),
       endTime: tour.endTime.toString(),
       tourType: tour.tourType,
-      price: tour.price
+      price: tour.price as number
     }
     console.log('DATA Update: ', dataUpdate);
     const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/tour/createTour`, dataUpdate, {

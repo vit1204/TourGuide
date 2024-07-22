@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MessageComponent from '@/components/MessageComponent';
 import { MessageComponentProps, Chat } from '@/types/interface';
 
-const socket = io('http://51.79.173.117:3000/apis '); 
+const socket = io(`${process.env.EXPO_PUBLIC_API_URL}`);
 
 // Ensure this is the correct backend address
 
@@ -25,7 +25,7 @@ const ChatScreen: React.FC = () => {
             if (value !== null) {
                 setUser(value);
             }
-        } catch (e) {
+        } catch (error) {
             console.error("Error while loading username!");
         }
     };
