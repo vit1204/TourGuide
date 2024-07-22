@@ -1,5 +1,6 @@
 import { TouchableOpacity, Text } from 'react-native'
 import React from 'react'
+import { red } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 const CustomButton = ({title, handlePress, containerStyles, textStyles, isLoading} : {
   title: string;
@@ -12,7 +13,9 @@ const CustomButton = ({title, handlePress, containerStyles, textStyles, isLoadin
     <TouchableOpacity 
         onPress={handlePress}
         activeOpacity={0.7}
-        className={`bg-primary rounded-xl justify-center items-center 
+        className={` rounded-xl justify-center items-center ${
+          title === 'Report' ? 'bg-red-700' : 'bg-primary'
+        }
             ${containerStyles} ${isLoading ? 'opacity-50' : ''}`}
 
     >

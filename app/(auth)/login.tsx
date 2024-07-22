@@ -32,6 +32,8 @@ export default function HomeScreen() {
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
         setUser(userInfo.userDetial  as User);
         await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
+
+        await AsyncStorage.setItem('roleUser', JSON.stringify(data.role));
     
         if (data.role === 'user') {
           router.replace('/home');

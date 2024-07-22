@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { Tour } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUTCDateString } from '@/utils/getUTCDateString';
+import { reportTour } from '@/utils/reportTour';
 
 const TourItem = ({tour}: {tour: Tour}) => {
 
@@ -41,7 +42,28 @@ const TourItem = ({tour}: {tour: Tour}) => {
         }
     }
     
-
+    const handleReportTour = () => {
+        Alert.alert(
+          "Report Tour",
+          "Are you sure you want to report this tour?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel"
+            },
+            {
+              text: "Yes",
+              onPress: async () => {
+                try {
+                  await reportTour(tour);
+                } catch (error) {
+                  console.error('Error reporting tour:', error);
+                }
+              }
+            }
+          ]
+        );
+      }
 
     return (
         <View className='mt-3 mb-3 p-1 w-full'>
@@ -95,6 +117,12 @@ const TourItem = ({tour}: {tour: Tour}) => {
             <CustomButton 
                 title='Detail'
                 handlePress={toDetailTour}
+                containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
+                textStyles='text-white font-bold text-center text-lg'
+            />
+            <CustomButton 
+                title='Report'
+                handlePress={handleReportTour}
                 containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
                 textStyles='text-white font-bold text-center text-lg'
             />

@@ -90,7 +90,7 @@ const TabsLayout = () => {
                         )
                     }}
                 />
-                <Tabs.Screen 
+                {/* <Tabs.Screen 
                     name='paymentTg'
                     options={{
                         title: 'Payment',
@@ -104,7 +104,7 @@ const TabsLayout = () => {
                             />
                         )
                     }}
-                />
+                /> */}
                 <Tabs.Screen 
                     name='profileTg'
                     options={{

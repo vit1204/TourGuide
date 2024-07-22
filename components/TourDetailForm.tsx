@@ -144,12 +144,12 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
           </View>
 
           <View className="flex-row justify-between w-11/12 mt-10 space-x-3">
-              <TouchableOpacity 
+              {/* <TouchableOpacity 
                 className="bg-red-200 py-6 px-3 rounded-lg flex-1 items-center border border-red-300 shadow-sm active:bg-red-300"
                 onPress={handleReportTour}
               >
                   <Text className="text-red-700 font-bold text-lg">REPORT</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               {tour.status === 'activity' && (
                   <TouchableOpacity

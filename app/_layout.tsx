@@ -14,10 +14,15 @@ const RootLayout = () => {
     const checkToken = async () => {
       try {
         const token = await AsyncStorage.getItem("authToken");
+        const roleUser = await AsyncStorage.getItem('roleUser');
         if (!token) {
           router.replace("login");
         } else {
-          router.replace("home");
+          if (roleUser === 'user') {
+            router.replace("home");
+          } else {
+            router.replace("homeTg");
+          }
         }
       } catch (error) {
         console.error("Error checking token:", error);
@@ -64,13 +69,11 @@ const RootLayout = () => {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs-tg)" options={{ headerShown: false }} />
         <Stack.Screen name="(userTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="chatScreen/[chatId]" options={{headerShown:true}} />
+        <Stack.Screen name="chatScreen/[chatId]" options={{headerShown: true}} />
         <Stack.Screen name="Query/query" options={{ headerShown: false }} />
         <Stack.Screen name="Query/id/[id]" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
-
-
   );
 };
 
