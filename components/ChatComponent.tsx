@@ -43,10 +43,8 @@ const ChatComponent = ({ chat }: { chat: Chat }) => {
             fetchGuide();
         }
     }, [chat]);
-    const handleNavigation = (chatId: string, userName: string = '') => {
-        
-
-        router.push(`/chatScreen/${chatId}&${userName}`);
+    const handleNavigation = (chatId: string, userName: string, userId: string ) => {
+        router.push(`/chatScreen/${chatId}?userName=${userName}&userId=${userId}`);
     };
 
     if (isLoading) {
@@ -61,7 +59,7 @@ const ChatComponent = ({ chat }: { chat: Chat }) => {
 
     return (
         user && (
-            <Pressable className="flex flex-row p-4 items-center" onPress={() => handleNavigation(chat._id, user.fullName)}>
+            <Pressable className="flex flex-row p-4 items-center" onPress={() => handleNavigation(chat._id, user.fullName, user._id)}>
                 <Image 
                     source={{ uri: user.avatar }}
                     className='w-12 h-12 rounded-full mr-4'

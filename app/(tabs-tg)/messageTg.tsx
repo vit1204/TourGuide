@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TextInput, ScrollView } from 'react-native';
-import { useFocusEffect, usePathname } from 'expo-router';
-import io from 'socket.io-client';
+import { useFocusEffect } from 'expo-router';
+import io, { Socket } from 'socket.io-client';
 import { getAllChatByUserId } from '@/config/authApi';
 import { Chat, User } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatComponent from '@/components/ChatComponent';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import socket from '@/utils/socket';
 
-const socket = io(`${process.env.EXPO_PUBLIC_API_URL}`); // Thay thế bằng địa chỉ backend của bạn
+// const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
 
 const MessageScreen = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -39,6 +41,24 @@ const MessageScreen = () => {
     }
   };
 
+  useEffect(() => {
+    //const socket = io('http://51.79.173.117:3000');
+
+    socket.on('connect', () => {
+      console.log('Socket connected');
+      setIsSocketConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Socket disconnected');
+      setIsSocketConnected(false);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       fetchUser();
@@ -46,7 +66,7 @@ const MessageScreen = () => {
   );
 
   useEffect(() => {
-    if (user) {
+    if (user ) {
       fetchChats(user._id);
     }
   }, [user]);

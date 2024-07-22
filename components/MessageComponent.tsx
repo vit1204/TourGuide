@@ -1,21 +1,13 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Message } from '@/types/chat';
 
-interface MessageComponentProps {
-    item: {
-        message: string;
-        user: string;
-        timestamp: { hour: string, mins: string };
-        chatId: string;
-        senderId: string;
-    };
-    user: string;
-}
+import { format, parseISO } from 'date-fns';
 
-const MessageComponent: React.FC<MessageComponentProps> = ({ item, user }) => {
-    const isCurrentUser = item.senderId === user;
-    const formattedTime = `${item.timestamp.hour}:${item.timestamp.mins}`;
+const MessageComponent = ({ message, userId } : {message : Message, userId: string}) => {
+    const isCurrentUser = message.senderId === userId;
+    const formattedTime = `${format(parseISO(message.timestamp), 'yyyy-MM-dd HH:mm:ss')}`;
 
     return (
         <View className={`flex ${isCurrentUser ? 'items-end' : 'items-start'} mb-2`}>
@@ -27,7 +19,7 @@ const MessageComponent: React.FC<MessageComponentProps> = ({ item, user }) => {
                     className="mr-2"
                 />
                 <View className={`p-2 rounded-lg ${isCurrentUser ? 'bg-green-200' : 'bg-gray-200'}`}>
-                    <Text className="text-black">{item.message}</Text>
+                    <Text className="text-black">{message.message}</Text>
                 </View>
             </View>
             <Text className="ml-10 text-xs text-gray-500">{formattedTime}</Text>
