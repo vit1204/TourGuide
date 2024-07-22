@@ -127,6 +127,19 @@ const ChatScreen: React.FC = () => {
         setMessage('');
     };
 
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          title : `Hồ Thành Tiến`,
+          headerStyle: {
+            backgroundColor: '#FF8C00', // Màu nền vàng
+          },
+          headerTintColor: '#fff', // Màu chữ trắng
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        });
+      }, [navigation]);
+
     return (
         <View className="flex-1">
             <View className="flex-1 p-4">
