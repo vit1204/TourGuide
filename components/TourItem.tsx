@@ -120,12 +120,15 @@ const TourItem = ({tour}: {tour: Tour}) => {
                 containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
                 textStyles='text-white font-bold text-center text-lg'
             />
-            <CustomButton 
+            {tour.status === 'activity' && (
+               <CustomButton 
                 title='Report'
                 handlePress={handleReportTour}
                 containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
                 textStyles='text-white font-bold text-center text-lg'
-            />
+                />
+            )}
+            
         </View>
     )
 }
