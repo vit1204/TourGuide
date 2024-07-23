@@ -1,24 +1,17 @@
-// 
-
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, TextInput, FlatList, Pressable } from 'react-native';
 import { useNavigation, useLocalSearchParams } from 'expo-router';
-import io from 'socket.io-client';
-import { Message, Chat } from '@/types/chat';
+import { Message, Chat, resultMessage } from '@/types/chat';
 import { getAllChatByUserId } from '@/config/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MessageComponent from '@/components/MessageComponent';
-import { red } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 import socket from '@/utils/socket';
-
-// const socket = io(`http://51.79.173.117:3000`);
-
-// Ensure this is the correct backend address
+import { sendMessage } from '@/config/chatApi';
 
 const ChatScreen: React.FC = () => {
     const navigation = useNavigation();
     const { chatId, userName, userId } = useLocalSearchParams();  
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<resultMessage[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [user, setUser] = useState("");
 
@@ -41,7 +34,7 @@ const ChatScreen: React.FC = () => {
     const fetchChatHistory = async () => {
         try {
             const data = await getAllChatByUserId(chatId as string || '');
-            if (data.messages) {
+            if (data.message) {
                 setMessages(data.messages);
             } else {
                 console.log('No messages found');
@@ -55,52 +48,58 @@ const ChatScreen: React.FC = () => {
         fetchChatHistory();
     }, [chatId]);
 
-    useEffect(() => {
-        if (chatId) {
-            // Join chat room
-            socket.emit('joinChat', chatId as string);
+    // useEffect(() => {
+    //     if (chatId) {
+    //         // Join chat room
+    //         socket.emit('joinChat', chatId);
     
-            // Confirm the join
-            socket.on('joinedChat', (chatId: string) => {
-                console.log(`Successfully joined chat ${chatId}`);
-            });
+    //         // Confirm the join
+    //         socket.on('joinedChat', (chatId: string) => {
+    //             console.log(`Successfully joined chat ${chatId}`);
+    //         });
     
-            // Handle new messages
-            socket.on('newMessage', (message: Message) => {
-                console.log('Received new message: ', message);
-                setMessages((prevMessages) => [...prevMessages, message]);
-            });
+    //         // Handle new messages
+    //         socket.on('newMessage', (message: resultMessage) => {
+    //             console.log('Received new message: ', message);
+    //             setMessages((prevMessages) => [...prevMessages, message]);
+    //         });
     
-            return () => {
-                socket.off('newMessage');
-                socket.off('joinedChat');
-            };
-        }
-    }, [chatId]);
+    //         return () => {
+    //             socket.off('connect');
+    //             socket.off('newMessage');
+    //             // socket.off('joinedChat');
+    //         };
+    //     }
+    // }, [chatId]);
 
-    const sendMessage = () => {
-        console.log('Sending message:', newMessage); // Log message content
-        socket.emit('sendMessage', {
-            chatId,
-            senderId: userId, // Replace with actual sender ID
-            message: newMessage,
-        });
-        setNewMessage('');
-    };
+    // const sendMessage = useCallback(() => {
+    //     if (newMessage.trim()) {
+    //       socket.emit('sendMessage', { chatId, senderId : userId, message: newMessage });
+    //       setNewMessage('');
+    //     } else {
+    //         console.log('Cannot send empty message');
+    //     }
+    //   }, [newMessage, chatId, userId]);
     
-    const handleNewMessage = () => {
+    const handleNewMessage = async () => {
         if (!newMessage) {
             return;
         }   
+        console.log("CHAT ID: ", chatId);
+        console.log('SENDER ID: ', userId);
+        console.log('Message :', newMessage);
         // Send message to server via socket
-        sendMessage();
-    
-        // Update UI immediately
-        setMessages((prevMessages) => [...prevMessages, {
-            senderId: userId,
+        await sendMessage(chatId as string, userId as string, newMessage)
+        // Append message to local stateresultMessage = {}
+        const newMsg : resultMessage = {
+            sender_id: userId as string,
             message: newMessage,
-            timestamp: new Date().toISOString(),
-        }as Message]);
+            _id: "",
+            deleted: false,
+            createdAt: "",
+            updatedAt: ""
+        }
+        setMessages((prevMessages) => [...prevMessages, newMsg]);
         setNewMessage('');
     };
 

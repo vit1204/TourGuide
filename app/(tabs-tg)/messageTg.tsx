@@ -40,21 +40,21 @@ const MessageScreen = () => {
     }
   };
 
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Socket connected');
-      setIsSocketConnected(true);
-    });
+  // useEffect(() => {
+  //   socket.on('connect', () => {
+  //     console.log('Socket connected');
+  //     setIsSocketConnected(true);
+  //   });
 
-    socket.on('disconnect', () => {
-      console.log('Socket disconnected');
-      setIsSocketConnected(false);
-    });
+  //   socket.on('disconnect', () => {
+  //     console.log('Socket disconnected');
+  //     setIsSocketConnected(false);
+  //   });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -63,10 +63,10 @@ const MessageScreen = () => {
   );
 
   useEffect(() => {
-    if (user && isSocketConnected ) {
+    if (user  ) {
       fetchChats(user._id);
     }
-  }, [user, isSocketConnected]);
+  }, [user]);
 
   if (isLoading) {
     return (

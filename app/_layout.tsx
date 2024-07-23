@@ -69,7 +69,7 @@ const RootLayout = () => {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs-tg)" options={{ headerShown: false }} />
         <Stack.Screen name="(userTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="chatScreen/[chatId]" options={{headerShown: true}} />
+        {/* <Stack.Screen name="chatScreen/[chatId]" options={{headerShown: true}} /> */}
         <Stack.Screen name="Query/query" options={{ headerShown: false }} />
         <Stack.Screen name="Query/id/[id]" options={{ headerShown: false }} />
       </Stack>

@@ -5,11 +5,12 @@ import { router, usePathname } from "expo-router";
 import { Chat, User } from "@/types/interface";
 import { Message } from "@/types/Messages";
 import { getUserById } from "@/config/authApi";
+import { resultMessage } from "@/types/chat";
 
 const ChatComponent = ({ chat }: { chat: Chat }) => {
     const navigation = useNavigation();
     const pathname = usePathname();
-    const [messages, setMessages] = useState<Message | null>(null);
+    const [messages, setMessages] = useState<resultMessage | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<User | null>(null);
 
@@ -17,7 +18,15 @@ const ChatComponent = ({ chat }: { chat: Chat }) => {
         if (chat.messages.length === 0) {
             setMessages(null);
         } else {
-            setMessages(chat.messages[chat.messages.length - 1]);
+            const lastMessageData = chat.messages[chat.messages.length - 1];
+            // const lastMessage: resultMessage = {
+            //     sender_id: lastMessageData.sender_id,
+            //     message: lastMessageData.message,
+            //     deleted: lastMessageData.deleted,
+            //     createdAt: lastMessageData.createdAt,
+            //     updatedAt: lastMessageData.updatedAt,
+            // };
+            setMessages(lastMessageData as unknown as resultMessage);
         }
     }, [chat]);
 
@@ -66,12 +75,12 @@ const ChatComponent = ({ chat }: { chat: Chat }) => {
                     <View>
                         <Text className="font-bold text-lg">{user.fullName}</Text>
                         <Text className="text-gray-600">
-                            {messages?.text ? messages.text : "Tap to start chatting"}
+                            {messages?.message ? messages.message : "Tap to start chatting"}
                         </Text>
                     </View>
                     <View>
                         <Text className="text-gray-400">
-                            {messages?.time ? messages.time : "now"}
+                            {messages?.createdAt ? messages.createdAt : "now"}
                         </Text>
                     </View>
                 </View>
