@@ -63,7 +63,7 @@ const MessageScreen = () => {
   );
 
   useEffect(() => {
-    if (user  ) {
+    if (user) {
       fetchChats(user._id);
     }
   }, [user]);
@@ -96,7 +96,7 @@ const MessageScreen = () => {
             <FlatList
               data={chats}
               keyExtractor={(item) => item._id}
-              renderItem={({ item }: { item: Chat }) => <ChatComponent chat={item} />}
+              renderItem={({ item }: { item: Chat }) => <ChatComponent chat={item} user_Id={user?._id ?? ''}/>}
             />
           ) : (
             <View className="flex-1 flex items-center justify-center">

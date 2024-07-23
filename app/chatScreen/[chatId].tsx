@@ -1,126 +1,115 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, FlatList, Pressable } from 'react-native';
 import { useNavigation, useLocalSearchParams } from 'expo-router';
-import { Message, Chat, resultMessage } from '@/types/chat';
+import { Chat, resultMessage } from '@/types/chat';
 import { getAllChatByUserId } from '@/config/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MessageComponent from '@/components/MessageComponent';
-import socket from '@/utils/socket';
 import { sendMessage } from '@/config/chatApi';
+import { FontAwesome } from '@expo/vector-icons';
 
 const ChatScreen: React.FC = () => {
     const navigation = useNavigation();
-    const { chatId, userName, userId } = useLocalSearchParams();  
+    const { chatId, userName, userId } = useLocalSearchParams();
+
     const [messages, setMessages] = useState<resultMessage[]>([]);
     const [newMessage, setNewMessage] = useState('');
-    const [user, setUser] = useState("");
+    const [nowId, setNowId] = useState('');
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const getUsername = async () => {
-        try {
-            const value = await AsyncStorage.getItem("username");
-            if (value !== null) {
-                setUser(value);
-            }
-        } catch (error) {
-            console.error("Error while loading username!");
-        }
-    };
+    const flatListRef = useRef<FlatList>(null);
 
     useLayoutEffect(() => {
         navigation.setOptions({ title: userName as string });
-        getUsername();
-    }, []);
+    }, [navigation, userName]);
 
-    const fetchChatHistory = async () => {
+    const getNowId = async () => {
         try {
-            const data = await getAllChatByUserId(chatId as string || '');
-            if (data.message) {
-                setMessages(data.messages);
-            } else {
-                console.log('No messages found');
+            const value = await AsyncStorage.getItem("nowId");
+            if (value !== null) {
+                setNowId(value);
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error while loading nowId!");
         }
     };
 
     useEffect(() => {
-        fetchChatHistory();
-    }, [chatId]);
+        getNowId();
+    }, []);
 
-    // useEffect(() => {
-    //     if (chatId) {
-    //         // Join chat room
-    //         socket.emit('joinChat', chatId);
-    
-    //         // Confirm the join
-    //         socket.on('joinedChat', (chatId: string) => {
-    //             console.log(`Successfully joined chat ${chatId}`);
-    //         });
-    
-    //         // Handle new messages
-    //         socket.on('newMessage', (message: resultMessage) => {
-    //             console.log('Received new message: ', message);
-    //             setMessages((prevMessages) => [...prevMessages, message]);
-    //         });
-    
-    //         return () => {
-    //             socket.off('connect');
-    //             socket.off('newMessage');
-    //             // socket.off('joinedChat');
-    //         };
-    //     }
-    // }, [chatId]);
+    const fetchChats = async (userId: string) => {
+        try {
+            const data = await getAllChatByUserId(userId);
+            setChats(data.allChat);
+        } catch (error) {
+            console.error("Error fetching chats: ", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    // const sendMessage = useCallback(() => {
-    //     if (newMessage.trim()) {
-    //       socket.emit('sendMessage', { chatId, senderId : userId, message: newMessage });
-    //       setNewMessage('');
-    //     } else {
-    //         console.log('Cannot send empty message');
-    //     }
-    //   }, [newMessage, chatId, userId]);
-    
+    useEffect(() => {
+        if (nowId) {
+            fetchChats(userId as string);
+        }
+    }, [nowId, userId]);
+
+    useEffect(() => {
+        const fetchChatHistory = () => {
+            const chat = chats.find(chat => chat._id === chatId as string);
+            if (chat) {
+                setMessages(chat.messages);
+            }
+        };
+
+        if (chats.length > 0) {
+            fetchChatHistory();
+        }
+    }, [chats, chatId]);
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            flatListRef.current?.scrollToEnd({ animated: true });
+        }
+    }, [messages]);
+
     const handleNewMessage = async () => {
         if (!newMessage) {
             return;
-        }   
-        console.log("CHAT ID: ", chatId);
-        console.log('SENDER ID: ', userId);
-        console.log('Message :', newMessage);
-        // Send message to server via socket
-        await sendMessage(chatId as string, userId as string, newMessage)
-        // Append message to local stateresultMessage = {}
-        const newMsg : resultMessage = {
-            sender_id: userId as string,
-            message: newMessage,
-            _id: "",
-            deleted: false,
-            createdAt: "",
-            updatedAt: ""
         }
-        setMessages((prevMessages) => [...prevMessages, newMsg]);
+
+        await sendMessage(chatId as string, userId as string, newMessage);
         setNewMessage('');
+        fetchChats(userId as string);
     };
 
-    React.useLayoutEffect(() => {
+    const handleReload = () => {
+        if (nowId) {
+            fetchChats(userId as string);
+        }
+    };
+
+    useLayoutEffect(() => {
         navigation.setOptions({
             title: `${userName as string}`,
-             headerStyle: {
-                backgroundColor: '#FF8C00', // Màu nền vàng
+            headerStyle: {
+                backgroundColor: '#FF8C00',
             },
-            headerTintColor: '#fff', // Màu chữ trắng
+            headerTintColor: '#fff',
             headerTitleStyle: {
                 fontWeight: 'bold',
             },
         });
-      }, [navigation]);
+    }, [navigation, userName]);
 
     return (
         <View className="flex-1">
             <View className="flex-1 p-4">
                 {messages.length > 0 ? (
                     <FlatList
+                        ref={flatListRef}
                         data={messages}
                         renderItem={({ item }) => (
                             <MessageComponent
@@ -129,6 +118,8 @@ const ChatScreen: React.FC = () => {
                             />
                         )}
                         keyExtractor={(item, index) => index.toString()}
+                        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+                        onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
                     />
                 ) : (
                     <Text className="text-center text-gray-500">No messages yet</Text>
@@ -147,6 +138,12 @@ const ChatScreen: React.FC = () => {
                     onPress={handleNewMessage}
                 >
                     <Text className="text-white text-lg">SEND</Text>
+                </Pressable>
+                <Pressable
+                    className="ml-2 p-2 bg-gray-200 rounded-full"
+                    onPress={handleReload}
+                >
+                    <FontAwesome name="refresh" size={24} color="black" />
                 </Pressable>
             </View>
         </View>
