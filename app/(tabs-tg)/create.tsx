@@ -154,7 +154,7 @@ const CreateTourScreen = () => {
         startTime: new Date(Date.now()),
         endTime: new Date(Date.now()),
         tourType: '',
-        price: 0,
+        price: 100000,
         status: '',
         deleted: false,
         createdAt: new Date(),
@@ -225,13 +225,6 @@ const CreateTourScreen = () => {
           className='border border-gray-300 mb-4 p-2 rounded bg-white'
         />
 
-        <Text className='mb-2 text-lg font-semibold text-gray-700'>Schedule</Text>
-        <TextInput
-          value={form.schedule}
-          onChangeText={(text) => handleInputChange('schedule', text)}
-          placeholder="Enter the schedule"
-          className='border border-gray-300 mb-4 p-2 rounded bg-white'
-        />
 
         <Text className='mb-2 text-lg font-semibold text-gray-700'>Start Date</Text>
         <TouchableOpacity 
@@ -242,16 +235,16 @@ const CreateTourScreen = () => {
         </TouchableOpacity>
         {isStartDatePickerVisible && (
           <DateTimePicker
-            value={form.startTime}
-            mode="date"
-            display="default"
-            minimumDate={new Date()}
-            onChange={(event, selectedDate) => {
-              setStartDatePickerVisibility(false);
-              if (selectedDate) {
-                handleInputChange('startTime', selectedDate);
-              }
-            }}
+          value={form.startTime}
+          mode="date"
+          display="default"
+          minimumDate={new Date()}
+          onChange={(event, selectedDate) => {
+            setStartDatePickerVisibility(false);
+            if (selectedDate) {
+              handleInputChange('startTime', selectedDate);
+            }
+          }}
           />
         )}
 
@@ -266,26 +259,36 @@ const CreateTourScreen = () => {
         </TouchableOpacity>
         {isEndDatePickerVisible && (
           <DateTimePicker
-            value={form.endTime}
-            mode="date"
-            display="default"
-            minimumDate={form.startTime}
-            onChange={(event, selectedDate) => {
-              setEndDatePickerVisibility(false);
-              if (selectedDate) {
-                handleInputChange('endTime', selectedDate);
-              }
-            }}
+          value={form.endTime}
+          mode="date"
+          display="default"
+          minimumDate={form.startTime}
+          onChange={(event, selectedDate) => {
+            setEndDatePickerVisibility(false);
+            if (selectedDate) {
+              handleInputChange('endTime', selectedDate);
+            }
+          }}
           />
         )}
         
-        <Text className='mb-2 text-lg font-semibold text-gray-700'>Tour Type</Text>
+        <Text className='mb-2 text-lg font-semibold text-gray-700'>Schedule</Text>
+        <TextInput
+          value={form.schedule}
+          onChangeText={(text) => handleInputChange('schedule', text)}
+          placeholder="Enter the schedule"
+          className='border border-gray-300 mb-4 p-2 rounded bg-white h-45'
+          multiline={true}
+          numberOfLines={6}
+          textAlignVertical="top"
+        />
+        {/* <Text className='mb-2 text-lg font-semibold text-gray-700'>Tour Type</Text>
         <TextInput
           value={form.tourType}
           onChangeText={(itemValue) => handleInputChange('tourType', itemValue)}
           placeholder="Enter the tour type"
           className='border border-gray-300 mb-4 p-2 rounded bg-white'
-        />
+        /> */}
 
         <CustomButton 
           title='Confirm' 

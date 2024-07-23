@@ -56,24 +56,26 @@ const ChatScreen: React.FC = () => {
     }, [chatId]);
 
     useEffect(() => {
-        // Join chat room
-        socket.emit('joinChat', chatId as string);
+        if (chatId) {
+            // Join chat room
+            socket.emit('joinChat', chatId as string);
     
-        // Confirm the join
-        socket.on('joinedChat', (chatId: string) => {
-            console.log(`Successfully joined chat ${chatId}`);
-        });
+            // Confirm the join
+            socket.on('joinedChat', (chatId: string) => {
+                console.log(`Successfully joined chat ${chatId}`);
+            });
     
-        // Handle new messages
-        socket.on('newMessage', (message: Message) => {
-            console.log('Received new message: ', message);
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
+            // Handle new messages
+            socket.on('newMessage', (message: Message) => {
+                console.log('Received new message: ', message);
+                setMessages((prevMessages) => [...prevMessages, message]);
+            });
     
-        return () => {
-            socket.off('newMessage');
-            socket.off('joinedChat');
-        };
+            return () => {
+                socket.off('newMessage');
+                socket.off('joinedChat');
+            };
+        }
     }, [chatId]);
 
     const sendMessage = () => {

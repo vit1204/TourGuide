@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TextInput, ScrollView } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import io, { Socket } from 'socket.io-client';
 import { getAllChatByUserId } from '@/config/authApi';
 import { Chat, User } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,8 +41,6 @@ const MessageScreen = () => {
   };
 
   useEffect(() => {
-    //const socket = io('http://51.79.173.117:3000');
-
     socket.on('connect', () => {
       console.log('Socket connected');
       setIsSocketConnected(true);
@@ -66,10 +63,10 @@ const MessageScreen = () => {
   );
 
   useEffect(() => {
-    if (user ) {
+    if (user && isSocketConnected ) {
       fetchChats(user._id);
     }
-  }, [user]);
+  }, [user, isSocketConnected]);
 
   if (isLoading) {
     return (
@@ -83,35 +80,35 @@ const MessageScreen = () => {
 
   return (
     <SafeAreaView className="flex w-full h-full">
-      <View className="flex-1 bg-white">
-        <View className="p-4 bg-primary_darker">
-          <Text className="text-2xl font-bold text-white">Message</Text>
-        </View>
-
-        <View className="p-4">
-          <TextInput
-            placeholder="Search"
-            className="bg-gray-200 p-2 rounded-lg"
-          />
-        </View>
-
-        {chats.length > 0 ? (
-          <FlatList
-            data={chats}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }: { item: Chat }) => <ChatComponent chat={item} />}
-          />
-        ) : (
-          <View className="flex-1 flex items-center justify-center">
-            <Text className="text-gray-500 text-lg">
-              You don't have any chat room
-            </Text>
-            <Text className="text-gray-400">
-              Start a new conversation
-            </Text>
+        <View className="flex-1 bg-white">
+          <View className="p-4 bg-primary_darker">
+            <Text className="text-2xl font-bold text-white">Message</Text>
           </View>
-        )}
-      </View>
+
+          <View className="p-4">
+            <TextInput
+              placeholder="Search"
+              className="bg-gray-200 p-2 rounded-lg"
+            />
+          </View>
+
+          {chats.length > 0 ? (
+            <FlatList
+              data={chats}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }: { item: Chat }) => <ChatComponent chat={item} />}
+            />
+          ) : (
+            <View className="flex-1 flex items-center justify-center">
+              <Text className="text-gray-500 text-lg">
+                You don't have any chat room
+              </Text>
+              <Text className="text-gray-400">
+                Start a new conversation
+              </Text>
+            </View>
+          )}
+        </View>
     </SafeAreaView>
   );
 };

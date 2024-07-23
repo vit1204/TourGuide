@@ -176,7 +176,7 @@ export const createTour = async (tour : Tour) => {
       numberUser: tour.numberUser,
       startTime: tour.startTime.toString(),
       endTime: tour.endTime.toString(),
-      tourType: tour.tourType,
+      tourType: "khám phá",
       price: tour.price as number
     }
     console.log('DATA Update: ', dataUpdate);

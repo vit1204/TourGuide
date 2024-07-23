@@ -1,11 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Pressable, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { router, usePathname } from "expo-router";
 import { Chat, User } from "@/types/interface";
 import { Message } from "@/types/Messages";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserById } from "@/config/authApi";
 
 const ChatComponent = ({ chat }: { chat: Chat }) => {
