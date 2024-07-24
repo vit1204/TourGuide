@@ -9,42 +9,37 @@ interface MessageComponentProps {
     userId: string;
 }
 
-
 const MessageComponent: React.FC<MessageComponentProps> = ({ message, userId }) => {
     const isCurrentUser = message.sender_id !== userId;
     const formattedTime = `${format(parseISO(message.createdAt), ' HH:mm dd-MM-yyyy')}`;
     const idTour = message.message && message.message.includes('Tour-ID: ')
-    ? message.message
-        .split('Tour-ID: ')[1]
-        .split(' ')[0]
-        .trim()
-    : '';
-
+        ? message.message
+            .split('Tour-ID: ')[1]
+            .split(' ')[0]
+            .trim()
+        : '';
 
     return (
         <View
-            style={{
-                alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
-                backgroundColor: isCurrentUser ? '#DCF8C6' : '#ECECEC',
-                borderRadius: 10,
-                padding: 10,
-                marginVertical: 5,
-                maxWidth: '80%',
-            }}
+            className={`${
+                isCurrentUser ? 'self-end bg-green-100' : 'self-start bg-gray/20'
+            } rounded-lg p-4 my-2 max-w-4/5`}
         >
             <Text>{message.message}</Text>
             {message.message.includes('PAYMENT IN HERE') && (
                 <Pressable
-                    className='bg-blue-700 p-2 border mt-5'
+                    className="bg-blue-700 p-2 rounded border border-blue-800 mt-2"
                     onPress={() => {
                         console.log('Payment button pressed: ', idTour);
-                        // router.replace(`/payment/${idTour}`);
+                        if (idTour) {
+                            router.replace(`/payment/${idTour}`);
+                        }
                     }}
                 >
-                    <Text className='text-white font-Nbold text-center'>Payment</Text>
+                    <Text className="text-white font-bold text-center">Payment</Text>
                 </Pressable>
             )}
-            <Text style={{ fontSize: 10, textAlign: 'right', marginTop: 5 }}>{formattedTime}</Text>
+            <Text className="text-xs text-right mt-2">{formattedTime}</Text>
         </View>
     );
 };

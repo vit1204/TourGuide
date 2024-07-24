@@ -14,6 +14,7 @@ export const reportTour = async (tour: Tour) => {
 
     // Get current location
     let location = await Location.getCurrentPositionAsync({});
+    console.log("LOCATION: ", location);
     const { latitude, longitude } = location.coords;
 
     // Convert coordinates to address
