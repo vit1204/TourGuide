@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, FlatList, Pressable } from 'react-native';
-import { useNavigation, useLocalSearchParams } from 'expo-router';
+import { useNavigation, useLocalSearchParams, router } from 'expo-router';
 import { Chat, resultMessage } from '@/types/chat';
 import { getAllChatByUserId } from '@/config/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,7 +21,14 @@ const ChatScreen: React.FC = () => {
     const flatListRef = useRef<FlatList>(null);
 
     useLayoutEffect(() => {
-        navigation.setOptions({ title: userName as string });
+        navigation.setOptions({ 
+            title: userName as string,
+            headerRight: () => (
+                <Pressable onPress={() => router.push(`/subSite/create?chatId=${chatId}&userId=${userId}&nowId=${nowId}`)}>
+                    <FontAwesome name="plus" size={24} color="black" />
+                </Pressable>
+            ),
+        });
     }, [navigation, userName]);
 
     const getNowId = async () => {
@@ -80,7 +87,7 @@ const ChatScreen: React.FC = () => {
             return;
         }
 
-        await sendMessage(chatId as string, userId as string, newMessage);
+        await sendMessage(chatId as string, nowId as string, newMessage);
         setNewMessage('');
         fetchChats(userId as string);
     };

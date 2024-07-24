@@ -10,7 +10,7 @@ interface MessageComponentProps {
 
 
 const MessageComponent: React.FC<MessageComponentProps> = ({ message, userId }) => {
-    const isCurrentUser = message.sender_id === userId;
+    const isCurrentUser = message.sender_id !== userId;
     const formattedTime = `${format(parseISO(message.createdAt), ' HH:mm dd-MM-yyyy')}`;
 
     return (

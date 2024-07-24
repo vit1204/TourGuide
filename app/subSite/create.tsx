@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { Tour, User } from '@/types/interface';
-import { useNavigation } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUsersByGuideId, getUserById, createTour } from '@/config/authApi';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +12,11 @@ import CustomButton from '@/components/CustomButton';
 
 const CreateTourScreen = () => {
   const navigation = useNavigation();
+
+  const { chatId, userId, nowId } = useLocalSearchParams();
+  console.log('chatId: ', chatId);
+  console.log('userId: ', userId);
+  console.log('nowId: ', nowId);
 
   const [user, setUser] = useState<User | null>(null);
   const [customers, setCustomers] = useState<User[]>([]);
@@ -164,6 +169,19 @@ const CreateTourScreen = () => {
     }
   };
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'Create New Tour',
+      headerStyle: {
+        backgroundColor: '#FF8C00', // Màu nền vàng
+      },
+      headerTintColor: '#fff', // Màu chữ trắng
+      headerTitleStyle: {
+        fontWeight: 'bold' ,
+      },
+    });
+  }, [navigation]);
+
   if (isLoading || isLoading2 || isLoading3) {
     return (
       <View className='h-full w-full justify-center items-center bg-gray-100'>
@@ -173,11 +191,11 @@ const CreateTourScreen = () => {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['right', 'bottom', 'left']}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View className=' mb-4'>
+        {/* <View className=' mb-4'>
           <Text className='text-4xl font-bold text-primary_darker text-gray-800 text-center'>Create New Tour</Text>
-        </View>
+        </View> */}
 
         <Text className='mb-2 text-lg font-semibold text-gray-700'>Customer</Text>
         <Picker
