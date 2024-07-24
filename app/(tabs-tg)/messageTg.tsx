@@ -40,22 +40,6 @@ const MessageScreen = () => {
     }
   };
 
-  // useEffect(() => {
-  //   socket.on('connect', () => {
-  //     console.log('Socket connected');
-  //     setIsSocketConnected(true);
-  //   });
-
-  //   socket.on('disconnect', () => {
-  //     console.log('Socket disconnected');
-  //     setIsSocketConnected(false);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       fetchUser();

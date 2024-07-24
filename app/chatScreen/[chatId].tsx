@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, FlatList, Pressable } from 'react-native';
-import { useNavigation, useLocalSearchParams, router } from 'expo-router';
+import { useNavigation, useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { Chat, resultMessage } from '@/types/chat';
 import { getAllChatByUserId } from '@/config/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +24,7 @@ const ChatScreen: React.FC = () => {
         navigation.setOptions({ 
             title: userName as string,
             headerRight: () => (
-                <Pressable onPress={() => router.push(`/subSite/create?chatId=${chatId}&userId=${userId}&nowId=${nowId}`)}>
+                <Pressable onPress={() => router.push(`/subSite/create?chatId=${chatId}&userId=${userId}&nowId=${nowId}&userName=${userName}`)}>
                     <FontAwesome name="plus" size={24} color="black" />
                 </Pressable>
             ),
@@ -42,9 +42,15 @@ const ChatScreen: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        getNowId();
-    }, []);
+    // useEffect(() => {
+    //     getNowId();
+    // }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getNowId();
+        }, [])
+      );
 
     const fetchChats = async (userId: string) => {
         try {

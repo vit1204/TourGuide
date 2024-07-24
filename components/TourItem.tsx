@@ -67,7 +67,7 @@ const TourItem = ({tour}: {tour: Tour}) => {
 
     return (
         <View className='mt-3 mb-3 p-1 w-full'>
-            <View className="flex-col py-1 px-1 rounded-lg border-gray-700 border-2">
+            <View className="flex-col py-1 px-1 rounded-lg border-gray-700 border-2 w-full">
                 <View className="flex-row items-center justify-between py-4 px-2">
                     <View className="bg-[#F2F2F2] rounded-lg py-1 px-3">
                         <Text className="text-base font-bold text-center">{getMonthName(startDate).slice(0, 3)}</Text>
