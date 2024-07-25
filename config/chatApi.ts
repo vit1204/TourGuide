@@ -21,3 +21,18 @@ export const sendMessage = async (chatId: string, senderId: string, message: str
         throw new Error((error as any).response?.data?.message || 'Get user failed');
     }
 }
+
+export const getDetailChat = async (chatId: string) => {
+    try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/chat/${chatId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.log('Error in api: ',error);
+        throw new Error((error as any).response?.data?.message || 'Get user failed');
+    }
+}

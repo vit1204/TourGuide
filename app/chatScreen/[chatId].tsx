@@ -5,7 +5,7 @@ import { Chat, resultMessage } from '@/types/chat';
 import { getAllChatByUserId } from '@/config/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MessageComponent from '@/components/MessageComponent';
-import { sendMessage } from '@/config/chatApi';
+import { getDetailChat, sendMessage } from '@/config/chatApi';
 import { FontAwesome } from '@expo/vector-icons';
 
 const ChatScreen: React.FC = () => {
@@ -15,8 +15,6 @@ const ChatScreen: React.FC = () => {
     const [messages, setMessages] = useState<resultMessage[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [nowId, setNowId] = useState('');
-    const [chats, setChats] = useState<Chat[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
 
     const flatListRef = useRef<FlatList>(null);
 
@@ -42,45 +40,23 @@ const ChatScreen: React.FC = () => {
         }
     };
 
-    // useEffect(() => {
-    //     getNowId();
-    // }, []);
-
     useFocusEffect(
         React.useCallback(() => {
             getNowId();
         }, [])
       );
 
-    const fetchChats = async (userId: string) => {
-        try {
-            const data = await getAllChatByUserId(userId);
-            setChats(data.allChat);
-        } catch (error) {
-            console.error("Error fetching chats: ", error);
-        } finally {
-            setIsLoading(false);
+    const fetchChatHistory = async () => {
+        const data : Chat = await getDetailChat(chatId as string);
+        if (data) {
+            setMessages(data.messages);
         }
     };
-
     useEffect(() => {
-        if (nowId) {
-            fetchChats(userId as string);
-        }
-    }, [nowId, userId]);
-
-    useEffect(() => {
-        const fetchChatHistory = () => {
-            const chat = chats.find(chat => chat._id === chatId as string);
-            if (chat) {
-                setMessages(chat.messages);
-            }
-        };
-
-        if (chats.length > 0) {
+        if (chatId) {
             fetchChatHistory();
         }
-    }, [chats, chatId]);
+    }, [nowId, chatId]);
 
     useEffect(() => {
         if (messages.length > 0) {
@@ -92,15 +68,14 @@ const ChatScreen: React.FC = () => {
         if (!newMessage) {
             return;
         }
-
         await sendMessage(chatId as string, nowId as string, newMessage);
         setNewMessage('');
-        fetchChats(userId as string);
+        fetchChatHistory();
     };
 
     const handleReload = () => {
         if (nowId) {
-            fetchChats(userId as string);
+            fetchChatHistory();
         }
     };
 
