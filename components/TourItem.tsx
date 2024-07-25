@@ -8,6 +8,7 @@ import { Tour } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUTCDateString } from '@/utils/getUTCDateString';
 import { reportTour } from '@/utils/reportTour';
+import { sendSMS } from '@/utils/sendSMS';
 
 const TourItem = ({tour}: {tour: Tour}) => {
 
@@ -56,6 +57,9 @@ const TourItem = ({tour}: {tour: Tour}) => {
               onPress: async () => {
                 try {
                     // await reportTour(tour);
+                    const phoneNumber = '0387517120';
+                    const EMERGENCY_MESSAGE = "Emergency! I am in danger. Please call me immediately or send help to my location.";
+                    await sendSMS(phoneNumber, EMERGENCY_MESSAGE);
                     router.push('/subSite/mapReport')
                 } catch (error) {
                     console.error('Error reporting tour:', error);
