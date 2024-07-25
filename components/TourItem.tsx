@@ -55,10 +55,10 @@ const TourItem = ({tour}: {tour: Tour}) => {
               text: "Yes",
               onPress: async () => {
                 try {
-                // await reportTour(tour);
-                  router.push('/subSite/mapReport')
+                    // await reportTour(tour);
+                    router.push('/subSite/mapReport')
                 } catch (error) {
-                  console.error('Error reporting tour:', error);
+                    console.error('Error reporting tour:', error);
                 }
               }
             }

@@ -32,7 +32,7 @@ const MessageComponent: React.FC<MessageComponentProps> = ({ message, userId }) 
                     onPress={() => {
                         console.log('Payment button pressed: ', idTour);
                         if (idTour) {
-                            router.replace(`/payment/${idTour}`);
+                            // router.replace(`/payment/${idTour}`);
                         }
                     }}
                 >

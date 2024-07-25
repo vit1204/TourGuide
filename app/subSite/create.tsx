@@ -17,15 +17,16 @@ const CreateTourScreen: React.FC = () => {
   const [customers, setCustomers] = useState<User[]>([]);
   const [userIds, setUserIds] = useState<string[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<string>(userId as string);
+  const [numberOfLocations, setNumberOfLocations] = useState(2);
   const [form, setForm] = useState<Tour>({
     _id: '',
     user_id: '',
     guide_id: '',
-    Tuorlocation: ['', ''],
+    Tuorlocation: Array(2).fill(''),
     schedule: '',
     numberUser: 1,
-    startTime: new Date(Date.now()),
-    endTime: new Date(Date.now()),
+    startTime: new Date(),
+    endTime: new Date(Date.now() + 24 * 60 * 60 * 1000), // Default endTime to 1 day after startTime
     tourType: '',
     price: 100000,
     status: '',
@@ -138,22 +139,49 @@ const CreateTourScreen: React.FC = () => {
     hideStartDatePicker();
     if (selectedDate) {
       setForm(prevForm => ({ ...prevForm, startTime: selectedDate }));
+      // Ensure end time is at least 1 day after start time
+      if (selectedDate > form.endTime) {
+        setForm(prevForm => ({
+          ...prevForm,
+          endTime: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000),
+        }));
+      }
     }
   };
 
   const handleEndDateChange = (event: any, selectedDate: Date | undefined) => {
     hideEndDatePicker();
     if (selectedDate) {
-      setForm(prevForm => ({ ...prevForm, endTime: selectedDate }));
+      const startTime = new Date(form.startTime);
+      const endTime = new Date(selectedDate);
+      const oneDayInMillis = 24 * 60 * 60 * 1000;
+      
+      if (endTime.getTime() < startTime.getTime()) {
+        Alert.alert('Invalid Date', 'End date must be at least 1 day after the start date.');
+      } else {
+        setForm(prevForm => ({
+          ...prevForm,
+          endTime: selectedDate,
+        }));
+      }
     }
   };
 
+  const handleNumberOfLocationsChange = (value: number) => {
+    setNumberOfLocations(value);
+    setForm(prevForm => ({
+      ...prevForm,
+      Tuorlocation: Array(value).fill(''),
+    }));
+  };
+
   const handleSubmit = async () => {
-    
     const data = {
       ...form,
       user_id: userId as string,
       guide_id: user?._id ?? '',
+      startTime: new Date(form.startTime.setHours(0, 0, 0, 0)),
+      endTime: new Date(form.endTime.setHours(0, 0, 0, 0)),
     };
 
     const requiredFields = ['Tuorlocation', 'schedule', 'numberUser', 'price'];
@@ -167,11 +195,11 @@ const CreateTourScreen: React.FC = () => {
 
     try {
       const hello = await createTour(data);
-      const newTour : Tour = hello.tour as Tour;
+      const newTour: Tour = hello.tour as Tour;
       Alert.alert('Tour created successfully');
 
-      const tourDetails = `
-        Tour-ID: ${newTour._id}
+      const tourDetails = 
+`       Tour-ID: ${newTour._id}
         Location: ${newTour.Tuorlocation.join(', ')}
         Schedule: ${newTour.schedule}
         Number of Users: ${newTour.numberUser}
@@ -179,8 +207,7 @@ const CreateTourScreen: React.FC = () => {
         End Time: ${newTour.endTime}
         Price: ${newTour.price}
         Schedule: ${newTour.schedule}
-        PAYMENT IN HERE
-      `;
+        PAYMENT IN HERE`;
       await sendMessage(chatId as string, user?._id as string, tourDetails);
 
       navigation.goBack();
@@ -188,24 +215,6 @@ const CreateTourScreen: React.FC = () => {
     } catch (error) {
       console.error('Error creating tour', error);
       Alert.alert('Error creating tour', 'An error occurred while creating the tour.');
-    } finally {
-      // setForm({
-      //   _id: '',
-      //   user_id: '',
-      //   guide_id: '',
-      //   Tuorlocation: ['', ''],
-      //   schedule: '',
-      //   numberUser: 1,
-      //   startTime: new Date(Date.now()),
-      //   endTime: new Date(Date.now()),
-      //   tourType: '',
-      //   price: 100000,
-      //   status: '',
-      //   deleted: false,
-      //   createdAt: new Date(),
-      //   updatedAt: new Date(),
-      //   __v: 0,
-      // });
     }
   };
 
@@ -233,7 +242,6 @@ const CreateTourScreen: React.FC = () => {
   return (
     <SafeAreaView className="flex-1 p-4" edges={['right', 'bottom', 'left']}>
       <ScrollView>
-        {/* <Text className="text-2xl font-semibold mb-4">Create Tour</Text> */}
         <View className="mb-4">
           <Text className="mb-2">Select Customer:</Text>
           <TextInput 
@@ -244,25 +252,29 @@ const CreateTourScreen: React.FC = () => {
         </View>
 
         <View className="mb-4">
-          <Text className='mb-2 text-lg font-semibold text-gray-700'>Location 1</Text>
-          <TextInput
-            value={form.Tuorlocation[0]}
-            onChangeText={(text) => handleInputChange('Tuorlocation', { index: 0, text })}
-            placeholder="Enter the start location"
+          <Text className='mb-2 text-lg font-semibold text-gray-700'>Number of Locations</Text>
+          <Picker
+            selectedValue={numberOfLocations}
+            onValueChange={(itemValue) => handleNumberOfLocationsChange(itemValue)}
             className='border border-gray-300 mb-4 p-2 rounded bg-white'
-          />
+          >
+            {[...Array(10).keys()].map(num => (
+              <Picker.Item key={num} label={`${num + 1}`} value={num + 1} />
+            ))}
+          </Picker>
         </View>
 
-        <View className="mb-4">
-          <Text className='mb-2 text-lg font-semibold text-gray-700'>Location 2</Text>
-          <TextInput
-            value={form.Tuorlocation[1]}
-            onChangeText={(text) => handleInputChange('Tuorlocation', { index: 1, text })}
-            placeholder="Enter the destination"
-            className='border border-gray-300 mb-4 p-2 rounded bg-white'
-          />
-        </View>
-
+        {Array.from({ length: numberOfLocations }).map((_, index) => (
+          <View key={index} className="mb-4">
+            <Text className='mb-2 text-lg font-semibold text-gray-700'>{`Location ${index + 1}`}</Text>
+            <TextInput
+              value={form.Tuorlocation[index]}
+              onChangeText={(text) => handleInputChange('Tuorlocation', { index, text })}
+              placeholder={`Enter location ${index + 1}`}
+              className='border border-gray-300 mb-4 p-2 rounded bg-white'
+            />
+          </View>
+        ))}
 
         <View className="mb-4">
           <Text className='mb-2 text-lg font-semibold text-gray-700'>Total Guests</Text>
@@ -286,16 +298,16 @@ const CreateTourScreen: React.FC = () => {
           </TouchableOpacity>
           {isStartDatePickerVisible && (
             <DateTimePicker
-            value={form.startTime}
-            mode="date"
-            display="default"
-            minimumDate={new Date()}
-            onChange={(event, selectedDate) => {
-              setStartDatePickerVisibility(false);
-              if (selectedDate) {
-                handleInputChange('startTime', selectedDate);
-              }
-            }}
+              value={form.startTime}
+              mode="date"
+              display="default"
+              minimumDate={new Date()}
+              onChange={(event, selectedDate) => {
+                setStartDatePickerVisibility(false);
+                if (selectedDate) {
+                  handleStartDateChange(event, selectedDate);
+                }
+              }}
             />
           )}
         </View>
@@ -313,22 +325,22 @@ const CreateTourScreen: React.FC = () => {
           </TouchableOpacity>
           {isEndDatePickerVisible && (
             <DateTimePicker
-            value={form.endTime}
-            mode="date"
-            display="default"
-            minimumDate={form.startTime}
-            onChange={(event, selectedDate) => {
-              setEndDatePickerVisibility(false);
-              if (selectedDate) {
-                handleInputChange('endTime', selectedDate);
-              }
-            }}
+              value={form.endTime}
+              mode="date"
+              display="default"
+              minimumDate={new Date(form.startTime.getTime() + 24 * 60 * 60 * 1000)}
+              onChange={(event, selectedDate) => {
+                setEndDatePickerVisibility(false);
+                if (selectedDate) {
+                  handleEndDateChange(event, selectedDate);
+                }
+              }}
             />
           )}
         </View>
 
         <View className="mb-4">
-          <Text className='mb-2 text-lg font-semibold text-gray-700'>Price per person</Text>
+          <Text className='mb-2 text-lg font-semibold text-gray-700'>Price is for 1 guest per day</Text>
           <TextInput
             value={form.price.toString()}
             onChangeText={(text) => handleInputChange('price', text)}
@@ -375,6 +387,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
-
 
 export default CreateTourScreen;

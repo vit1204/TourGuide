@@ -3,14 +3,35 @@ import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region } from 'react-native-
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from 'expo-router';
 import * as Location from 'expo-location';
-import { markers } from '@/assets/markers';
 
 const INITIAL_REGION = {
-    latitude: 21.028511,
-    longitude: 105.804817,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitude: 16.0697491382831,
+    longitude: 108.23841026052833,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
 };
+
+interface MarkerData {
+    latitude: number;
+    longitude: number;
+    title: string;
+    description?: string;
+}
+
+const predefinedMarkers: MarkerData[] = [
+    {
+        latitude: 16.0697148,
+        longitude: 108.237133,
+        title: 'Đà Nẵng',
+        description: 'Thành phố biển xinh đẹp',
+    },
+    {
+        latitude: 16.0697491382831,
+        longitude: 108.23841026052833,
+        title: 'Nhu Minh Plaza Danang Hotel',
+        description: 'Địa điểm của bạn hiện tại',
+    },
+];
 
 export default function MapReport() {
     const navigation = useNavigation();
@@ -19,26 +40,38 @@ export default function MapReport() {
     const [currentLocation, setCurrentLocation] = useState<Location.LocationObject | null>(null);
 
     useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
+        const getLocationPermission = async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 Alert.alert('Permission to access location was denied');
                 return;
             }
 
-            let location = await Location.getCurrentPositionAsync({});
+            const location = await Location.getCurrentPositionAsync({});
             setCurrentLocation(location);
-            setRegion({
+            const currentRegion = {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            });
-        })();
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            };
+            setRegion(currentRegion);
+            mapRef.current?.animateToRegion(currentRegion, 1000);
+        };
+
+        getLocationPermission();
     }, []);
 
     useEffect(() => {
         navigation.setOptions({
+            title: 'Your location',
+            headerStyle: {
+                backgroundColor: '#FF8C00', // Màu nền vàng
+            },
+            headerTintColor: '#fff', // Màu chữ trắng
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
             headerRight: () => (
                 <TouchableOpacity onPress={focusMap}>
                     <View style={{ padding: 10 }}>
@@ -65,26 +98,23 @@ export default function MapReport() {
         console.log('Region changed', region);
     };
 
-    const calloutPressed = (ev: any) => {
-        console.log(ev);
+    const renderMarkers = () => {
+        return predefinedMarkers.map((marker, index) => (
+            <Marker
+                key={index}
+                title={marker.title}
+                description={marker.description}
+                coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+            >
+                <Callout>
+                    <View style={{ padding: 10 }}>
+                        <Text style={{ fontSize: 24 }}>{marker.title}</Text>
+                        {marker.description && <Text>{marker.description}</Text>}
+                    </View>
+                </Callout>
+            </Marker>
+        ));
     };
-
-    const onMarkerSelected = (marker: any) => {
-        Alert.alert(marker.name);
-    };
-
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            title: 'Your location',
-            headerStyle: {
-                backgroundColor: '#FF8C00', // Màu nền vàng
-            },
-            headerTintColor: '#fff', // Màu chữ trắng
-            headerTitleStyle: {
-                fontWeight: 'bold',
-            },
-        });
-    }, [navigation]);
 
     return (
         <View style={{ flex: 1 }}>
@@ -97,20 +127,6 @@ export default function MapReport() {
                 ref={mapRef}
                 onRegionChangeComplete={onRegionChange}
             >
-                {/* {markers.map((marker, index) => (
-                    <Marker
-                        key={index}
-                        title={marker.name}
-                        coordinate={marker}
-                        onPress={() => onMarkerSelected(marker)}
-                    >
-                        <Callout onPress={calloutPressed}>
-                            <View style={{ padding: 10 }}>
-                                <Text style={{ fontSize: 24 }}>Hello</Text>
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))} */}
                 {currentLocation && (
                     <Marker
                         title="Your Location"
@@ -126,7 +142,14 @@ export default function MapReport() {
                         </Callout>
                     </Marker>
                 )}
+                {renderMarkers()}
             </MapView>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+});

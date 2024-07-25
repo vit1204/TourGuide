@@ -177,7 +177,7 @@ export const createTour = async (tour : Tour) => {
       startTime: tour.startTime.toString(),
       endTime: tour.endTime.toString(),
       tourType: "khám phá",
-      price: tour.price as number
+      price: (tour.price)
     }
     console.log('DATA Update: ', dataUpdate);
     const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/tour/createTour`, dataUpdate, {
