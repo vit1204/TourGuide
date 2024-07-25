@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import MapView, { Callout, Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from 'expo-router';
 import * as Location from 'expo-location';
 
@@ -123,7 +123,7 @@ export default function MapReport() {
                 initialRegion={region || INITIAL_REGION}
                 showsUserLocation
                 showsMyLocationButton
-                provider={PROVIDER_GOOGLE}
+             provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
                 ref={mapRef}
                 onRegionChangeComplete={onRegionChange}
             >

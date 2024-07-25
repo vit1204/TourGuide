@@ -10,6 +10,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EmptyState from '@/components/EmptyState';
 import TourUserDetail from '@/components/TourUserDetail';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 
 
@@ -62,8 +63,7 @@ const TourDetail = () => {
     getCurrentTour();
   }, []);
 
-  useEffect(() => {
-    const getCurrentGuide = async () => {
+  const getCurrentGuide = async () => {
       try {
         if(currentTour){
           const guideId  = currentTour.map((tour: { guide_id: any; })  => tour.guide_id);
@@ -81,12 +81,15 @@ const guideData = await getUserById(guideId[0])
       }
     };
 
+  useEffect(() => {
+  
+
     if (currentTour) {
       getCurrentGuide();
     }
   },[currentTour])
 
-  useEffect(() => {
+
     const getCurrentCustomer = async () => {
       try {
           if(user){
@@ -99,6 +102,8 @@ const guideData = await getUserById(guideId[0])
         setIsLoadingCustomer(false); //Sau khi xử lý dữ liệu, set isLoadingCustomer thành false
       }
     };
+  useEffect(() => {
+  
 
     if (currentTour) {
       getCurrentCustomer();
@@ -143,6 +148,12 @@ const guideData = await getUserById(guideId[0])
 
   return (
 <SafeAreaView className='flex-1 h-full bg-white '>
+  <Text onPress={ async () => {
+   await getCurrentTour();
+   await getCurrentGuide()
+   await getCurrentCustomer()
+
+  }} className='text-black text-[20px]' > Reload </Text>
  <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: '#FF8C00',
