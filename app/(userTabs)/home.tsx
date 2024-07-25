@@ -47,11 +47,15 @@ const onConfirm = (selectedDate:Date) => {
   };
   
   function handleNavigate(){
+    if(place === "" || date === "" ){
+      Alert.alert("Please fill in the information")
+      return
+    }
     router.push("/Query/query")
   }
   
   return (
-    <View className="flex justify-center items-center mt-[40px]">
+    <View className="flex justify-center items-center mt-[130px]">
       <View className="w-[370px] h-auto rounded border-[6px] border-yellow-300 flex flex-col divide-y-[0.4px] divide-gray-400">
         <View className="w-full h-[60px] flex flex-row items-center bg-white">
           <Image source={Icon.search} className="mx-1 w-5 h-5" />
@@ -96,19 +100,15 @@ const Home = () => {
                 <Logo />
                 <View>
                     <Text style={{ fontSize:14 }}> Welcome Back </Text>
-                    <Text style={{ fontSize:24 }} > {(user as User).userName} </Text>
+                    <Text style={{ fontSize:24 }} > {user.userName} </Text>
                 </View>
             </View>
         } >
-                 <View className="h-full bg-white">
+                 <View className="h-full bg-white ">
                     <TableSearch />
                  
         </View>
         
-      
-
-        
-
         </ParallaxScrollView>
     
       

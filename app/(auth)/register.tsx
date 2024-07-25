@@ -25,11 +25,9 @@ export default function Register() {
 
    async  function handleRegister(){
      try {
-    
-    
       const res = await register(form)
       console.log(res)
-      if(res.status === 200){
+      if(res){
         router.push('/login')
       }
      } catch (error) {

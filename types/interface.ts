@@ -3,7 +3,7 @@ import { Message } from "./Messages";
 
 export interface User {
     _id: string;
-    avatar: string;
+    avatar: any
     fullName: string;
     phoneNumber: string;
     userName: string;

@@ -16,5 +16,5 @@
      
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "components/FormField.tsx", "constants/Icon.js", "components/VideoList.jsx", "components/TableSearch.jsx", "app/(userTabs)/home.tjsx", "context/GlobalProvider.js", "app/(userTabs)/home.tsx"  ]
+, "components/FormField.tsx", "constants/Icon.js", "components/VideoList.jsx", "components/TableSearch.jsx", "app/(userTabs)/home.tjsx", "context/GlobalProvider.js", "app/(userTabs)/home.tsx", "app/index.tsx", "app/(payment)/success.jsx", "app/(payment)/cancel.jsx"  ]
 }

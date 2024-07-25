@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Alert } from 'react-native';
 import { Tour } from '@/types/interface';
 
-export const reportTour = async (tour: Tour) => {
+export const reportTour = async (tour: Object) => {
   try {
     // Request location permissions
     let { status } = await Location.requestForegroundPermissionsAsync();

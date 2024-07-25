@@ -19,7 +19,7 @@ export const login = async (userName: string, password: string) => {
   }
 };
 
-export const getUserById = async (userId: string) => {
+export const getUserById = async (userId: string | string[]) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/user/${userId}`, {
@@ -34,6 +34,24 @@ export const getUserById = async (userId: string) => {
   }
 
 }
+
+export const startChat = async (userId: string, guideId: string | undefined) => {
+  try {
+        const token = await AsyncStorage.getItem('authToken');
+
+    const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/chat/start-chat`, 
+      {
+      userId,
+      guideId,
+    }, {headers:{ Authorization: `Bearer ${token}`}
+    },
+  );
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Start failed');
+  }
+};
 
 export const saveUserData = async (user: User) => {
   try {
@@ -77,6 +95,22 @@ export const getAllTourByGuideId = async (userId: string) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/tour/getAllTourByGuideId/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error in api: ',error);
+    throw new Error((error as any).response?.data?.message || 'Get all tour failed');
+  }
+}
+
+
+export const getAllTourByUserId = async (userId: string) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/tour/getAllTourByUserId/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
