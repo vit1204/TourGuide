@@ -13,11 +13,13 @@ const RootLayout = () => {
     const checkToken = async () => {
       try {
         const token = await AsyncStorage.getItem("authToken");
-        const roleUser = await AsyncStorage.getItem("roleUser");
+
+        const roleUser = await AsyncStorage.getItem('roleUser');
         if (!token) {
           router.replace("login");
         } else {
-          if (roleUser === "user") {
+          if (roleUser === 'user') {
+
             router.replace("home");
           } else {
             router.replace("homeTg");
@@ -67,6 +69,7 @@ const RootLayout = () => {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs-tg)" options={{ headerShown: false }} />
         <Stack.Screen name="(userTabs)" options={{ headerShown: false }} />
+
         <Stack.Screen name="Query/query" options={{ headerShown: false }} />
         <Stack.Screen name="Query/id/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="(payment)" options={{ headerShown: false }} />

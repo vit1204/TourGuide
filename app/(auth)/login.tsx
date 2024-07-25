@@ -36,7 +36,9 @@ export default function HomeScreen() {
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
         setUser(userInfo.userDetial  as User);
         await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
-        await AsyncStorage.setItem('nowId', JSON.stringify(userInfo.userDetial._id));
+        await AsyncStorage.setItem('nowId', JSON.stringify(userInfo.userDetial._id))
+        await AsyncStorage.setItem('roleUser', JSON.stringify(data.role));
+
         if (data.role === 'user') {
           router.replace('/home');
         } else if (data.role === 'guide') {
@@ -63,7 +65,7 @@ export default function HomeScreen() {
 
         <View className='bg-white h-full'  >  
           <FormField
-            title="userName"
+            title="Username"
             value={form.userName}
             handleChangeText={(e:any) => setForm({ ...form, userName: e })}
             otherStyles="mt-7"

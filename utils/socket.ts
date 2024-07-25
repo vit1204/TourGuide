@@ -35,5 +35,4 @@ socket.on('connect_timeout', () => {
 // socket.on('disconnect', () => {
 //     console.log('Socket disconnected');
 // });
-
 export default socket;

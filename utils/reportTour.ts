@@ -14,19 +14,19 @@ export const reportTour = async (tour: Object) => {
 
     // Get current location
     let location = await Location.getCurrentPositionAsync({});
+    console.log("LOCATION: ", location);
     const { latitude, longitude } = location.coords;
 
     // Convert coordinates to address
-    const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_GOOGLE_MAPS_API_KEY`);
-    const address = response.data.results[0]?.formatted_address;
+    // const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_GOOGLE_MAPS_API_KEY`);
+    // const address = response.data.results[0]?.formatted_address;
 
     // Prepare data
     const data = {
       tour,
       location: {
         latitude,
-        longitude,
-        address
+        longitude
       }
     };
 

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,8 @@ import { router } from 'expo-router';
 import { Tour } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUTCDateString } from '@/utils/getUTCDateString';
+import { reportTour } from '@/utils/reportTour';
+import { sendSMS } from '@/utils/sendSMS';
 
 const TourItem = ({tour}: {tour: Tour}) => {
 
@@ -41,12 +43,37 @@ const TourItem = ({tour}: {tour: Tour}) => {
         }
     }
     
-
+    const handleReportTour = () => {
+        Alert.alert(
+          "Report Tour",
+          "Are you sure you want to report this tour?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel"
+            },
+            {
+              text: "Yes",
+              onPress: async () => {
+                try {
+                    // await reportTour(tour);
+                    const phoneNumber = '0387517120';
+                    const EMERGENCY_MESSAGE = "Emergency! I am in danger. Please call me immediately or send help to my location.";
+                    await sendSMS(phoneNumber, EMERGENCY_MESSAGE);
+                    router.push('/subSite/mapReport')
+                } catch (error) {
+                    console.error('Error reporting tour:', error);
+                }
+              }
+            }
+          ]
+        );
+      }
 
     return (
         <View className='mt-3 mb-3 p-1 w-full'>
-            <View className="flex-col py-1 px-1 rounded-lg border-gray-700 border-2">
-                <View className="flex-row items-center justify-between py-4 px-2">
+            <View className="flex-col py-1 px-1 rounded-lg border-gray-700 border-2 w-full">
+                <View className="flex-row items-center justify-between w-[90%] py-4 px-2 ">
                     <View className="bg-[#F2F2F2] rounded-lg py-1 px-3">
                         <Text className="text-base font-bold text-center">{getMonthName(startDate).slice(0, 3)}</Text>
                         <Text className="text-3xl font-bold text-center text-[#FFC626]">{startDate.getUTCDate()}</Text>
@@ -81,7 +108,7 @@ const TourItem = ({tour}: {tour: Tour}) => {
                     </View>
 
                     <View>
-                        <Text className="text-lg font-bold text-center text-blue_text">{tour.price.toLocaleString('vi-VN')}</Text>
+                        <Text className="text-lg font-bold text-center text-blue_text">{Math.floor(tour.price).toLocaleString('vi-VN')}</Text>
                     </View>
                 </View>
 
@@ -98,6 +125,15 @@ const TourItem = ({tour}: {tour: Tour}) => {
                 containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
                 textStyles='text-white font-bold text-center text-lg'
             />
+            {tour.status === 'activity' && (
+               <CustomButton 
+                title='Report'
+                handlePress={handleReportTour}
+                containerStyles='bg-blue_text rounded-lg py-2 px-4 mt-1'
+                textStyles='text-white font-bold text-center text-lg'
+                />
+            )}
+            
         </View>
     )
 }
