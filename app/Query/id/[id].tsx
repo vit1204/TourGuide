@@ -69,16 +69,15 @@ const TourguideList = () => {
     fetchUser()
   },[])
 
-console.log(user._id)
-console.log(userData?._id)
 
 
   const handleRent = async () => {
     try {
       const chatId = await startChat(user._id, userData?._id);
       if(chatId){
-        console.log(chatId)
+
                 router.push(`/chatScreen/${chatId.chatId}?userName=${userData?.fullName}&userId=${userData?._id}`);
+             
       }
     } catch (error) {
       console.log(error)

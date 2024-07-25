@@ -11,7 +11,6 @@ import { FontAwesome } from '@expo/vector-icons';
 const ChatScreen: React.FC = () => {
     const navigation = useNavigation();
     const { chatId, userName, userId } = useLocalSearchParams();
-
     const [messages, setMessages] = useState<resultMessage[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [nowId, setNowId] = useState('');
