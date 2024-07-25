@@ -10,7 +10,6 @@ interface MessageComponentProps {
 }
 
 const MessageComponent: React.FC<MessageComponentProps> = ({ message, userId }) => {
-    console.log('====');
     const isCurrentUser = message.sender_id ===  '"' + userId + '"'; 
     const formattedTime = `${format(parseISO(message.createdAt), ' HH:mm dd-MM-yyyy')}`;
     const idTour = message.message && message.message.includes('Tour-ID: ')
