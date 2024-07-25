@@ -32,8 +32,9 @@ const ChatScreen: React.FC = () => {
     const getNowId = async () => {
         try {
             const value = await AsyncStorage.getItem("nowId");
+            console.log('VALUE: ', JSON.parse(value as string));
             if (value !== null) {
-                setNowId(value);
+                setNowId(JSON.parse(value as string));
             }
         } catch (error) {
             console.error("Error while loading nowId!");

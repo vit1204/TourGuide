@@ -16,13 +16,13 @@ const CreateTourScreen: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [customers, setCustomers] = useState<User[]>([]);
   const [userIds, setUserIds] = useState<string[]>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<string>(userId as string);
   const [numberOfLocations, setNumberOfLocations] = useState(2);
   const [form, setForm] = useState<Tour>({
     _id: '',
     user_id: '',
     guide_id: '',
-    Tuorlocation: Array(2).fill(''),
+    Tuorlocation: ['', ''],
+    // Tuorlocation: Array(2).fill(''),
     schedule: '',
     numberUser: 1,
     startTime: new Date(),
@@ -252,29 +252,33 @@ const CreateTourScreen: React.FC = () => {
         </View>
 
         <View className="mb-4">
-          <Text className='mb-2 text-lg font-semibold text-gray-700'>Number of Locations</Text>
-          <Picker
-            selectedValue={numberOfLocations}
-            onValueChange={(itemValue) => handleNumberOfLocationsChange(itemValue)}
+          <Text className='mb-2 text-lg font-semibold text-gray-700'>Location first</Text>
+          <TextInput
+            value={form.Tuorlocation[0]}
+            onChangeText={(text) => handleInputChange('Tuorlocation', { index: 0, text })}
+            placeholder="Enter the start location"
             className='border border-gray-300 mb-4 p-2 rounded bg-white'
-          >
-            {[...Array(10).keys()].map(num => (
-              <Picker.Item key={num} label={`${num + 1}`} value={num + 1} />
-            ))}
-          </Picker>
+          />
         </View>
 
-        {Array.from({ length: numberOfLocations }).map((_, index) => (
-          <View key={index} className="mb-4">
-            <Text className='mb-2 text-lg font-semibold text-gray-700'>{`Location ${index + 1}`}</Text>
-            <TextInput
-              value={form.Tuorlocation[index]}
-              onChangeText={(text) => handleInputChange('Tuorlocation', { index, text })}
-              placeholder={`Enter location ${index + 1}`}
-              className='border border-gray-300 mb-4 p-2 rounded bg-white'
-            />
-          </View>
-        ))}
+        <View className="mb-4">
+          <Text className='mb-2 text-lg font-semibold text-gray-700'>Location last</Text>
+          <TextInput
+            value={form.Tuorlocation[1]}
+            onChangeText={(text) => handleInputChange('Tuorlocation', { index: 1, text })}
+            placeholder="Enter the last location"
+            className='border border-gray-300 mb-4 p-2 rounded bg-white'
+          />
+        </View>
+
+        <View className="mb-4">
+          <Text className='mb-2 text-lg font-semibold text-gray-700'>Number of possible locations</Text>
+          <TextInput
+            placeholder="Enter the number of possible locations"
+            keyboardType="numeric"
+            className='border border-gray-300 mb-4 p-2 rounded bg-white'
+          />
+        </View>
 
         <View className="mb-4">
           <Text className='mb-2 text-lg font-semibold text-gray-700'>Total Guests</Text>
@@ -286,6 +290,7 @@ const CreateTourScreen: React.FC = () => {
             className='border border-gray-300 mb-4 p-2 rounded bg-white'
           />
         </View>
+        
 
         <View className="mb-4">
           <Text className='mb-2 text-lg font-semibold text-gray-700'>Start Date</Text>
