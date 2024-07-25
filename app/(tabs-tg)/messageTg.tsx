@@ -6,14 +6,12 @@ import { Chat, User } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatComponent from '@/components/ChatComponent';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import socket from '@/utils/socket';
 import { FontAwesome } from '@expo/vector-icons';
 
 const MessageScreen = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -76,7 +74,6 @@ const MessageScreen = () => {
             className="absolute top-4 right-4 p-2 rounded-full"
             onPress={handleReload}
           >
-            {/* <Text className="text-white font-bold">Reload</Text> */}
             <FontAwesome name="refresh" size={24} color="black" />
           </Pressable>
         </View>

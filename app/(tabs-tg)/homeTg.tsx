@@ -127,16 +127,6 @@ const HomeTg = () => {
             </View>
             <Ionicons name="chevron-forward-outline" size={24} color="black" />
           </TouchableOpacity>
-
-          {/* <TouchableOpacity
-            className="bg-white flex-row items-center justify-between border-b border-gray-200 py-3 px-4"
-          >
-            <View className="flex-row items-center">
-              <Ionicons name="settings-outline" size={24} color="black" />
-              <Text className="ml-3 text-black text-base">Travel Settings</Text>
-            </View>
-            <Ionicons name="chevron-forward-outline" size={24} color="black" />
-          </TouchableOpacity> */}
         </View>
       </ScrollView>
     </SafeAreaView>
