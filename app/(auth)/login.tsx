@@ -33,8 +33,6 @@ export default function HomeScreen() {
         setUser(userInfo.userDetial  as User);
         await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
         await AsyncStorage.setItem('nowId', JSON.stringify(userInfo.userDetial._id));
-        console.log('NOW ID: ', userInfo.userDetial._id)
-
         await AsyncStorage.setItem('roleUser', JSON.stringify(data.role));
     
         if (data.role === 'user') {
