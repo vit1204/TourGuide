@@ -90,21 +90,7 @@ const TabsLayout = () => {
                         )
                     }}
                 />
-                <Tabs.Screen 
-                    name='paymentTg'
-                    options={{
-                        title: 'Payment',
-                        headerShown: false,
-                        tabBarIcon: ({color, focused}) => (
-                            <TabIcon 
-                                icon={icons.payment}
-                                color={color}
-                                name='Payment'
-                                focused={focused}
-                            />
-                        )
-                    }}
-                />
+    
                 <Tabs.Screen 
                     name='profileTg'
                     options={{

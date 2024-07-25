@@ -3,7 +3,7 @@ import { Message } from "./Messages";
 
 export interface User {
     _id: string;
-    avatar: string;
+    avatar: any
     fullName: string;
     phoneNumber: string;
     userName: string;
@@ -75,3 +75,18 @@ export interface MessageComponentProps {
     };
     user: string;
 }
+
+export { Message };
+
+
+export interface Message2 {
+    senderId: string;
+    message: string;
+    timestamp: string; // or Date, depending on your server implementation
+  }
+  
+  export interface Chat2 {
+    id: string;
+    messages: Message[];
+  }
+  

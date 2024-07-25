@@ -22,6 +22,7 @@ import minus from "../assets/icons/minus.png"
 import add from "../assets/icons/add.png"
 import message from "../assets/icons/message.png"
 import payment from "../assets/icons/payment.png"
+import sad from "../assets/icons/sad.png"
 
 export default {
   play,
@@ -47,5 +48,6 @@ export default {
   minus,
   add,
   message,
-  payment
+  payment,
+  sad
 };

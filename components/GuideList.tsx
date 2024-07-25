@@ -1,8 +1,8 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
-import Images from "@/constants/images";
 import Icon from "@/constants/Icon";
 import StarRating from "react-native-star-rating-widget";
 import { PropsWithChildren, useState } from "react";
+import { images } from "@/constants";
 
 type Props = PropsWithChildren<{
   userData : any,
@@ -10,12 +10,14 @@ type Props = PropsWithChildren<{
 }> 
 
 const GuideList = ( {userData, handleChange} : Props ) => {
+
+
     
   return (
 <TouchableOpacity onPress={() => handleChange(userData._id)} >
         <View>
       <View >
-        <Image source={Images.photo} />
+        <Image source={{uri:userData.avatar}} style={{ width: 200, height: 200 }}resizeMode="contain"  />
 
         <Image
           className="absolute bottom-[-10px] left-[130px] bg-white rounded-[50%]   w-10 h-10"

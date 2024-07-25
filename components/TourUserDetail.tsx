@@ -1,13 +1,41 @@
-import { View, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, Image, TouchableOpacity, Alert, Linking } from 'react-native'
+import React, { useState } from 'react'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '@/constants';
 import { Tour, User } from '@/types/interface';
 import { reportTour } from '@/utils/reportTour';
 import { getUTCDateString } from '@/utils/getUTCDateString';
+import axios from 'axios';
+import { useConfirmPayment} from "@stripe/stripe-react-native"
 
-const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, customer: User}) => {
+interface TourDetailFormProps {
+  tour: {
+    Tuorlocation: string[];
+    startTime: string;
+    endTime: string;
+    numberUser: number;
+    price: number;
+    status: string;
+    schedule: string;
+    user_id: string;
+    guide_id: string;
+    tourType: string;
+  };
+  guide: User;
+  customer: User;
+}
+
+const TourDetailForm = ({tour, guide, customer}: TourDetailFormProps) => {
+  
+  const {confirmPayment, loading:loadingPay} = useConfirmPayment()
+
+  const [items, setItems ] = useState<any[]>([])
+  const [quantity, setQuantity] = useState(1)
+  const [twoEmpty, setTwoEmpty] = useState({
+    name: "",
+    description:""
+  })
 
   const handleEndTour = () => {
     Alert.alert(
@@ -60,7 +88,7 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
           text: "Yes",
           onPress: async () => {
             try {
-              await reportTour(tour);
+              await reportTour(tour as Object );
             } catch (error) {
               console.error('Error reporting tour:', error);
             }
@@ -69,6 +97,51 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
       ]
     );
   }
+
+
+  if (tour.status === 'upcoming' && items.length === 0) {
+    setItems([{
+      name: tour.tourType,
+         description: tour.Tuorlocation[0],
+      quantity: quantity,
+      price: tour.price
+    }]);
+  }
+  
+  const handlePayment = async () => {
+    try {
+       if(tour){
+      console.log({
+        items,
+         user_id: tour.user_id,
+         guide_id: tour.guide_id,
+         description: tour.schedule
+      })
+      const response  = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/stripe/createSessionPayment`, {
+        items: items,
+         user_id: tour.user_id,
+         guide_id: tour.guide_id,
+         description: tour.schedule
+      })
+      console.log(response)
+      if (response.data) {
+             console.log(response.data)
+             Linking.openURL(response.data.url)
+    
+      } else {
+
+        console.error('Unexpected response status:', response.status);
+      }
+
+    }
+      
+    } catch (error) {
+      console.log(error)
+    }
+   
+  }
+
+
 
   return (
     <SafeAreaView className="flex-1 bg-white h-full" edges={['right', 'bottom', 'left']}>
@@ -144,12 +217,16 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
           </View>
 
           <View className="flex-row justify-between w-11/12 mt-10 space-x-3">
-              {/* <TouchableOpacity 
+          {tour.status === 'activity' && (
+             <TouchableOpacity 
                 className="bg-red-200 py-6 px-3 rounded-lg flex-1 items-center border border-red-300 shadow-sm active:bg-red-300"
                 onPress={handleReportTour}
               >
                   <Text className="text-red-700 font-bold text-lg">REPORT</Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
+
+          )}
+             
 
               {tour.status === 'activity' && (
                   <TouchableOpacity
@@ -161,17 +238,15 @@ const TourDetailForm = ({tour, guide, customer}: {tour: Tour, guide: User, custo
               )}
 
               {tour.status === 'upcoming' && (
+                <>
                   <TouchableOpacity
-                      className="bg-blue-200 py-6 px-3 rounded-lg flex-1 items-center border border-blue-300 shadow-sm active:bg-blue-300"
-                      onPress={handleCancelTour}
+                      className="bg-primary py-6 px-3 rounded-lg flex-1 items-center border border-blue-300 shadow-sm active:bg-blue-300"
+                      onPress={handlePayment}
                   >
-                      <Text className="text-blue-700 font-bold text-lg">CANCEL</Text>
+                      <Text className="text-white font-bold text-lg">Pay</Text>
                   </TouchableOpacity>
+              </>
               )}
-
-              <TouchableOpacity className="bg-yellow-200 py-6 px-3 rounded-lg flex-1 items-center border border-yellow-300 shadow-sm active:bg-yellow-300">
-                  <Text className="text-yellow-700 font-bold text-lg">COMMENT</Text>
-              </TouchableOpacity>
           </View>
         </View>
 

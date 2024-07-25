@@ -21,18 +21,22 @@ export default function HomeScreen() {
       try {
         const data = await login(form.userName, form.password);
         await AsyncStorage.setItem('authToken', data.token);
+        console.log(data.token)
     
         // Decode token để lấy userId
         const decodedToken: any = jwtDecode(data.token);
         const userId = decodedToken.id;
+        console.log(userId)
     
          // Gọi API để lấy thông tin người dùng
         const userInfo = await getUserById(userId);
-        setUser(userInfo.userDetial  as User);
+        
+      
+     
         await AsyncStorage.setItem('user', JSON.stringify(userInfo.userDetial));
         setUser(userInfo.userDetial  as User);
         await AsyncStorage.setItem('username', JSON.stringify(userInfo.userDetial.fullName))
-    
+        await AsyncStorage.setItem('nowId', JSON.stringify(userInfo.userDetial._id));
         if (data.role === 'user') {
           router.replace('/home');
         } else if (data.role === 'guide') {

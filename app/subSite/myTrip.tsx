@@ -43,6 +43,8 @@ const MyTrips = () => {
     }
   }
 
+
+
   useFocusEffect(
     React.useCallback(() => {
       fetchTours();
