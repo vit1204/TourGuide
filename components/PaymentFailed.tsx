@@ -5,7 +5,7 @@ import { router } from "expo-router"
 
 import Icon from "@/constants/Icon"
 
-const SuccesPayment = () => {
+const SuccesFailed = () => {
     return(
         <SafeAreaView className=" bg-white h-full">
             <ScrollView>
@@ -26,4 +26,4 @@ const SuccesPayment = () => {
     )
 }
 
-export default SuccesPayment;
+export default SuccesFailed;

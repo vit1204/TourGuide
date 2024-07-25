@@ -80,7 +80,7 @@ const ChatComponent = ({ chat, user_Id }: { chat: Chat, user_Id: string }) => {
             <Pressable className="flex flex-row p-4 items-center" onPress={() => handleNavigation(chat._id, user.fullName, user._id)}>
                 <Image 
                     source={{ uri: user?.avatar ? user.avatar : 'https://nhadepso.com/wp-content/uploads/2023/03/cap-nhat-50-hinh-anh-dai-dien-facebook-mac-dinh-dep-doc-la_2.jpg'}}
-                    className='w-12 h-12 rounded-full mr-4'
+                    className='w-12 h-12 rounded-full mr-3'
                 />
                 <View className="flex flex-1 flex-row justify-between">
                     <View>

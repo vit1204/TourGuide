@@ -77,7 +77,8 @@ console.log(userData?._id)
     try {
       const chatId = await startChat(user._id, userData?._id);
       if(chatId){
-                router.push(`/chatScreen/${chatId}?userName=${userData?.fullName}&userId=${userData?._id}`);
+        console.log(chatId)
+                router.push(`/chatScreen/${chatId.chatId}?userName=${userData?.fullName}&userId=${userData?._id}`);
       }
     } catch (error) {
       console.log(error)

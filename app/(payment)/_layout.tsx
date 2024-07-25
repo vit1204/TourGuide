@@ -6,8 +6,8 @@ export default function AuthLayout() {
   return (
    <>
    <Stack  >
-    <Stack.Screen name="PaymentSucess" options={ { headerShown:false } } />
-    <Stack.Screen name="PaymentFailed" options={ { headerShown:false } } />
+    <Stack.Screen name="success" options={ { headerShown:false } } />
+    <Stack.Screen name="cancel" options={ { headerShown:false } } />
    </Stack>
    <StatusBar barStyle={"light-content"} />
    </>

@@ -10,6 +10,7 @@ export const sendMessage = async (chatId: string, senderId: string, message: str
             senderId : senderId,
             message: message,
         }
+        console.log('dataTosend: ', dataToSend);
         const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/chat/send-message`, dataToSend, {
             headers: {
                 Authorization: `Bearer ${token}`,

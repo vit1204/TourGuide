@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TextInput, ScrollView } from 'react-native';
+import { View, Text, FlatList, TextInput, Pressable } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { getAllChatByUserId } from '@/config/authApi';
 import { Chat, User } from '@/types/interface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatComponent from '@/components/ChatComponent';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import socket from '@/utils/socket';
-
-// const apiUrl = process.env.EXPO_PUBLIC_API_URL as string;
+import { FontAwesome } from '@expo/vector-icons';
 
 const MessageScreen = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -40,22 +37,6 @@ const MessageScreen = () => {
     }
   };
 
-  // useEffect(() => {
-  //   socket.on('connect', () => {
-  //     console.log('Socket connected');
-  //     setIsSocketConnected(true);
-  //   });
-
-  //   socket.on('disconnect', () => {
-  //     console.log('Socket disconnected');
-  //     setIsSocketConnected(false);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       fetchUser();
@@ -67,6 +48,12 @@ const MessageScreen = () => {
       fetchChats(user._id);
     }
   }, [user]);
+
+  const handleReload = () => {
+    if (user) {
+      fetchChats(user._id);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -80,35 +67,41 @@ const MessageScreen = () => {
 
   return (
     <SafeAreaView className="flex w-full h-full">
-        <View className="flex-1 bg-white">
-          <View className="p-4 bg-primary_darker">
-            <Text className="text-2xl font-bold text-white">Message</Text>
-          </View>
-
-          <View className="p-4">
-            <TextInput
-              placeholder="Search"
-              className="bg-gray-200 p-2 rounded-lg"
-            />
-          </View>
-
-          {chats.length > 0 ? (
-            <FlatList
-              data={chats}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }: { item: Chat }) => <ChatComponent chat={item} user_Id={user?._id ?? ''}/>}
-            />
-          ) : (
-            <View className="flex-1 flex items-center justify-center">
-              <Text className="text-gray-500 text-lg">
-                You don't have any chat room
-              </Text>
-              <Text className="text-gray-400">
-                Start a new conversation
-              </Text>
-            </View>
-          )}
+      <View className="flex-1 bg-white">
+        <View className="p-4 bg-primary_darker relative">
+          <Text className="text-2xl font-bold text-white">Message</Text>
+          <Pressable
+            className="absolute top-4 right-4 p-2 rounded-full"
+            onPress={handleReload}
+          >
+            <FontAwesome name="refresh" size={24} color="black" />
+          </Pressable>
         </View>
+
+        <View className="p-4">
+          <TextInput
+            placeholder="Search"
+            className="bg-gray-200 p-2 rounded-lg"
+          />
+        </View>
+
+        {chats.length > 0 ? (
+          <FlatList
+            data={chats}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }: { item: Chat }) => <ChatComponent chat={item} user_Id={user?._id ?? ''} />}
+          />
+        ) : (
+          <View className="flex-1 flex items-center justify-center">
+            <Text className="text-gray-500 text-lg">
+              You don't have any chat room
+            </Text>
+            <Text className="text-gray-400">
+              Start a new conversation
+            </Text>
+          </View>
+        )}
+      </View>
     </SafeAreaView>
   );
 };

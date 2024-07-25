@@ -47,6 +47,10 @@ const onConfirm = (selectedDate:Date) => {
   };
   
   function handleNavigate(){
+    if(place === "" || date === "" ){
+      Alert.alert("Please fill in the information")
+      return
+    }
     router.push("/Query/query")
   }
   

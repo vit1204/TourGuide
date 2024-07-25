@@ -66,6 +66,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-thumbnail-video": "^0.1.2",
     "react-native-web": "~0.19.10",
+    "react-native-webview": "^13.10.5",
     "react-router-native": "^6.25.1",
     "sass": "^1.77.6",
     "socket.io-client": "^4.7.5"

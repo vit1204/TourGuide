@@ -1,28 +1,23 @@
 import { router, SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import React, { useEffect, useState } from "react";
-import GlobalProvider from '../context/GlobalProvider';
+import GlobalProvider from "../context/GlobalProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContainer } from "@react-navigation/native";
-import { Alert, Linking } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-
-
-
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const checkToken = async () => {
       try {
         const token = await AsyncStorage.getItem("authToken");
-        const roleUser = await AsyncStorage.getItem('roleUser');
+        const roleUser = await AsyncStorage.getItem("roleUser");
         if (!token) {
           router.replace("login");
         } else {
-          if (roleUser === 'user') {
+          if (roleUser === "user") {
             router.replace("home");
           } else {
             router.replace("homeTg");
@@ -60,7 +55,6 @@ const RootLayout = () => {
   }
 
   return (
-
     <GlobalProvider>
       <Stack
         screenOptions={{
@@ -75,8 +69,7 @@ const RootLayout = () => {
         <Stack.Screen name="(userTabs)" options={{ headerShown: false }} />
         <Stack.Screen name="Query/query" options={{ headerShown: false }} />
         <Stack.Screen name="Query/id/[id]" options={{ headerShown: false }} />
-                <Stack.Screen name="(payment)" options={{ headerShown: false }} />
-
+        <Stack.Screen name="(payment)" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   );
