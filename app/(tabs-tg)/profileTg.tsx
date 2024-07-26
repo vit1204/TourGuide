@@ -45,6 +45,7 @@ const TourGuideProfile = () => {
     router.push('../subSite/editProfile');
   };
 
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ padding: 16 }}>

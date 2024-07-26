@@ -5,30 +5,11 @@ import { router, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/types/interface';
+import { useGlobalContext } from '@/context/GlobalProvider';
 
 const TourGuideProfile = () => {
-  //avatar: 'https://via.placeholder.com/150', // Ảnh đại diện mặc định
-  const [user, setUser] = useState<User | null>(null);
 
-  const fetchUser = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('user');
-      if (userData) {
-        setUser(JSON.parse(userData) as User);
-      } else {
-        console.log('No user data found');
-      }
-    } catch (error) {
-      console.error('Error fetching user data', error);
-    }
-  };
-
-
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchUser();
-    }, [])
-  );
+  const {user} = useGlobalContext()
 
   if (!user) {
     return (
@@ -44,6 +25,7 @@ const TourGuideProfile = () => {
   const handleEditProfile = () => {
     router.push('../subSite/editProfile');
   };
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">

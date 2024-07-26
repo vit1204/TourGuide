@@ -69,8 +69,6 @@ const TourguideList = () => {
     fetchUser()
   },[])
 
-
-
   const handleRent = async () => {
     try {
       const chatId = await startChat(user._id, userData?._id);
@@ -84,7 +82,7 @@ const TourguideList = () => {
     }
   }
 
- 
+
 
   const texts = [
     {
@@ -122,6 +120,8 @@ const TourguideList = () => {
               </View>
             </View>
           </View>
+
+          <Image  className="w-full h-[100px] " resizeMode="contain"  source={{uri: userData?.imageAuthenGuide}} />
 
           <View className="mb-[30px]">
             <Text className="text-[20px] font-Nmedium "> Description </Text>

@@ -9,6 +9,8 @@ const GlobalProvider = ({children}) => {
     const [user,setUser ] = useState(null)
     const [place, setPlace] = useState('')
     const [date,setDate] = useState(new Date())
+    const [languages,setLanguages] = useState('')
+    const [gender,setGender] = useState('')
 
 
     return(
@@ -19,7 +21,11 @@ const GlobalProvider = ({children}) => {
        place,
        setPlace,
        date,
-       setDate
+       setDate,
+       gender,
+       setGender,
+    languages,
+    setLanguages
       }}
     >
       {children}

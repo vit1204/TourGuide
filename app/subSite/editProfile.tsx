@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/types/interface';
 import { saveUserData, uploadImage } from '@/config/authApi';
 import CustomButton from '@/components/CustomButton';
+import { router } from 'expo-router';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
@@ -90,7 +91,7 @@ const EditProfileScreen = () => {
       await saveUserData({ ...form, avatar: avatarUrl });
       await AsyncStorage.setItem('user', JSON.stringify({ ...form, avatar: avatarUrl }));
       Alert.alert('Success', 'Profile updated successfully');
-      navigation.goBack();
+      router.back()
     } catch (error) {
       console.error('Error saving user data', error);
       Alert.alert('Error', 'Failed to update profile');

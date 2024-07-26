@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 const SuccesPayment = () => {
     return(
      <>
-             <WebView source={{ uri: 'https://www.facebook.com/TienHoWeb/' }} style={{ flex: 1 }} />
+             <WebView source={{ uri: 'http://51.79.173.117:3001/success/' }} style={{ flex: 1 }} />
        </>
     )
 }

@@ -6,7 +6,7 @@ const SuccesFailed = () => {
   return (
     <>
       <WebView
-        source={{ uri: "https://www.facebook.com/" }}
+        source={{ uri: "http://51.79.173.117:3001/success/" }}
         style={{ flex: 1 }}
       />
     </>

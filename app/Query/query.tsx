@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   Image,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import Icon from "@/constants/Icon";
 import { useEffect, useMemo, useState } from "react";
@@ -27,15 +28,19 @@ const TourguideList = () => {
 const navigation  = useNavigation()
 const [numColumns, setNumColumns] = useState(2);
 
-  const { place, setPlace, date, setDate } = useGlobalContext();
+  const { place, setPlace, date, setDate, gender,languages,setGender,setLanguages } = useGlobalContext();
     const [userData, setUserData] = useState<any[]>([]);
   const pathname = usePathname();
   const [filterQuery, setFilterQuery] = useState({
     workLocation: place,
     freeTimeBegin: date,
-        price: "low_to_high", // Default sorting
+        price: "low_to_high",
+    gender: gender,
+    languages: languages,
 
   });
+
+
 
   React.useLayoutEffect(() => {
      navigation.setOptions({
@@ -64,11 +69,14 @@ const [numColumns, setNumColumns] = useState(2);
           params: {
             workLocation: filterQuery.workLocation,
             freeTimeBegin: filterQuery.freeTimeBegin,
+            gender: filterQuery.gender,
+            languages: filterQuery.languages,
           },
         }
       );
 
       return response.data;
+     
     } catch (error) {
       console.log("Error in api: ", error);
       throw new Error(
@@ -82,8 +90,12 @@ const [numColumns, setNumColumns] = useState(2);
     try {
       const response = await getGuideBySearch();
       if (response) {
+         
            const sortedData = sortUserData(response.guides, filterQuery.price);
         setUserData(sortedData);
+           setGender("")
+           setLanguages("")
+        
       }
     } catch (error) {
       console.log(error);
@@ -129,10 +141,12 @@ const guide = userData.filter(user => user.role === 'guide')
     <SafeAreaView className="flex-1 bg-white h-full" >
 
       <View className="mt-4 flex flex-row items-center justify-around mb-[40px] ">
+        <TouchableOpacity onPress={() => router.push("Query/filter")} >
         <View className="flex flex-row items-center ">
           <Image source={Icon.filter} />
           <Text> Filter </Text>
         </View>
+         </TouchableOpacity>
         <View className="flex flex-row items-center ">
           <Image source={Icon.price} />
           <RNPickerSelect

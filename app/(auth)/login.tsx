@@ -41,7 +41,7 @@ export default function HomeScreen() {
 
         if (data.role === 'user') {
           router.replace('/home');
-        } else if (data.role === 'guide') {
+        } else if (data.role === 'guide' || data.role === 'local') {
           console.log('Vao Tour Guide');
           router.replace('/homeTg');
         } else {
