@@ -26,6 +26,9 @@ export interface User {
     age: number;
     describe: string;
     languages: string[];
+    rating: string;
+    imageCCCD: any;
+    imageAuthenGuide: any;
 }
 
 export interface Tour {
