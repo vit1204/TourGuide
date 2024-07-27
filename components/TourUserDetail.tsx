@@ -8,6 +8,8 @@ import { reportTour } from '@/utils/reportTour';
 import { getUTCDateString } from '@/utils/getUTCDateString';
 import axios from 'axios';
 import { useConfirmPayment} from "@stripe/stripe-react-native"
+import { sendSMS } from '@/utils/sendSMS';
+import { router } from 'expo-router';
 
 interface TourDetailFormProps {
   tour: {
@@ -75,29 +77,6 @@ const TourDetailForm = ({tour, guide, customer}: TourDetailFormProps) => {
     );
   };
 
-  const handleReportTour = () => {
-    Alert.alert(
-      "Report Tour",
-      "Are you sure you want to report this tour?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: async () => {
-            try {
-              await reportTour(tour as Object );
-            } catch (error) {
-              console.error('Error reporting tour:', error);
-            }
-          }
-        }
-      ]
-    );
-  }
-
 
   if (tour.status === 'upcoming' && items.length === 0) {
     setItems([{
@@ -107,6 +86,33 @@ const TourDetailForm = ({tour, guide, customer}: TourDetailFormProps) => {
       price: tour.price
     }]);
   }
+
+  const handleReportTour = () => {
+        Alert.alert(
+          "Report Tour",
+          "Are you sure you want to report this tour?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel"
+            },
+            {
+              text: "Yes",
+              onPress: async () => {
+                try {
+                    // await reportTour(tour);
+                    const phoneNumber = '0387517120';
+                    const EMERGENCY_MESSAGE = "Emergency! I am in danger. Please call me immediately or send help to my location.";
+                    await sendSMS(phoneNumber, EMERGENCY_MESSAGE);
+                    router.push('/subSite/mapReport')
+                } catch (error) {
+                    console.error('Error reporting tour:', error);
+                }
+              }
+            }
+          ]
+        );
+      }
   
   const handlePayment = async () => {
     try {
@@ -123,11 +129,8 @@ const TourDetailForm = ({tour, guide, customer}: TourDetailFormProps) => {
          guide_id: tour.guide_id,
          description: tour.schedule
       })
-      console.log(response)
       if (response.data) {
-             console.log(response.data)
              Linking.openURL(response.data.url)
-    
       } else {
 
         console.error('Unexpected response status:', response.status);
@@ -138,8 +141,9 @@ const TourDetailForm = ({tour, guide, customer}: TourDetailFormProps) => {
     } catch (error) {
       console.log(error)
     }
-   
   }
+
+  
 
 
 

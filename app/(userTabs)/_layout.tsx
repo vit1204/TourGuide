@@ -62,6 +62,7 @@ const TabsLayout = () => {
                     options={{
                         title: 'Message',
                         headerShown: false,
+                       
                         tabBarIcon: ({color, focused}) => (
                             <TabIcon 
                                 icon={icons.message}

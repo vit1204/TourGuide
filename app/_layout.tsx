@@ -7,33 +7,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-  const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    const checkToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
 
-        const roleUser = await AsyncStorage.getItem('roleUser');
-        if (!token) {
-          router.replace("login");
-        } else {
-          if (roleUser === 'user') {
-
-            router.replace("home");
-          } else {
-            router.replace("homeTg");
-          }
-        }
-      } catch (error) {
-        console.error("Error checking token:", error);
-      } finally {
-        setIsReady(true);
-      }
-    };
-
-    checkToken();
-  }, []);
+ 
 
   const [fontsLoaded, fontsError] = useFonts({
     "NeueMontreal-Regular": require("../assets/fonts/NeueMontreal-Regular.ttf"),
@@ -52,7 +28,7 @@ const RootLayout = () => {
     }
   }, [fontsLoaded, fontsError]);
 
-  if (!fontsLoaded || !isReady) {
+  if (!fontsLoaded ) {
     return null;
   }
 

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { router, useFocusEffect } from 'expo-router';
+import { router} from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User } from '@/types/interface';
 import { useGlobalContext } from '@/context/GlobalProvider';
 
 const TourGuideProfile = () => {
 
-  const {user} = useGlobalContext()
+  const {user,setUser} = useGlobalContext()
 
   if (!user) {
     return (
@@ -25,10 +24,28 @@ const TourGuideProfile = () => {
   const handleEditProfile = () => {
     router.push('../subSite/editProfile');
   };
-
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      setUser(null);
+      router.replace('/login');
+    } catch (error) {
+      console.error('Error during logout', error);
+      Alert.alert('Logout failed', 'There was an error during logout.');
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+         <View className="p-4 bg-primary_darker relative mb-3">
+          <Text className="text-2xl font-Nbold text-white">Profile</Text>
+          <TouchableOpacity
+            className="absolute top-4 right-4 p-2 rounded-full bg-blue"
+            onPress={handleLogout}
+          >
+            <FontAwesome name="sign-out" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <View className="items-center mb-8">
           <Image

@@ -8,13 +8,15 @@ import { getUserById } from "@/config/authApi";
 import { resultMessage } from "@/types/chat";
 import { format, parseISO } from 'date-fns';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const ChatComponent = ({ chat, user_Id }: { chat: Chat, user_Id: string }) => {
     const navigation = useNavigation();
     const pathname = usePathname();
     const [messages, setMessages] = useState<resultMessage | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState<User | null>(null);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const {user} = useGlobalContext()
 
     useLayoutEffect(() => {
         if (chat.messages.length === 0) {
@@ -27,10 +29,18 @@ const ChatComponent = ({ chat, user_Id }: { chat: Chat, user_Id: string }) => {
 
     const fetchGuide = async () => {
         try {
-            const data = await getUserById(chat.user_id);
+            if(user.role === "user"){
+                 const data = await getUserById(chat.guide_id);
             if (data && data.userDetial) {
-                setUser(data.userDetial as User);
-            } else {
+                setCurrentUser(data.userDetial as User);
+            }
+        }else if(user.role === "guide" || user.role === "local"){
+                   const data = await getUserById(chat.user_id);
+            if (data && data.userDetial) {
+                setCurrentUser(data.userDetial as User);
+            }
+        }
+            else {
                 console.log('No user found');
             }
         } catch (error) {
@@ -76,15 +86,15 @@ const ChatComponent = ({ chat, user_Id }: { chat: Chat, user_Id: string }) => {
     }
 
     return (
-        user && (
-            <Pressable className="flex flex-row p-4 items-center" onPress={() => handleNavigation(chat._id, user.fullName, user._id)}>
+        currentUser && (
+            <Pressable className="flex flex-row p-4 items-center" onPress={() => handleNavigation(chat._id, currentUser.fullName, currentUser._id)}>
                 <Image 
-                    source={{ uri: user?.avatar ? user.avatar : 'https://nhadepso.com/wp-content/uploads/2023/03/cap-nhat-50-hinh-anh-dai-dien-facebook-mac-dinh-dep-doc-la_2.jpg'}}
+                    source={{ uri: currentUser?.avatar ? currentUser.avatar : 'https://nhadepso.com/wp-content/uploads/2023/03/cap-nhat-50-hinh-anh-dai-dien-facebook-mac-dinh-dep-doc-la_2.jpg'}}
                     className='w-12 h-12 rounded-full mr-3'
                 />
                 <View className="flex flex-1 flex-row justify-between">
                     <View>
-                        <Text className="font-bold text-lg">{user.fullName}</Text>
+                        <Text className="font-bold text-lg">{currentUser.fullName}</Text>
                         <Text className="text-gray-600">
                             {messages?.message ? truncateMessage(messages.message, 40) : "Tap to start chatting"}
                         </Text>

@@ -118,17 +118,15 @@ export default function Register() {
 
 <Text className="text-base text-black font-pmedium">Gender</Text>
 <View className='flex flex-row justify-around'>
-
-
         <RadioCheck title='Male'
           onChange={(e:any) => setForm({ ...form, gender: e })}
-          value='Male'
+          value='nam'
           selectedValue={ form.gender  }
         />
 
            <RadioCheck title='Female'
           onChange={(e:any) => setForm({ ...form, gender: e })}
-          value='Female'
+          value='nữ'
           selectedValue={ form.gender  }
         />
         </View>
