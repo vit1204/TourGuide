@@ -161,9 +161,9 @@ const EditProfileScreen = () => {
 
             <RadioCheck
               title='Female'
-              onChange={(e) => setForm({ ...form, gender: 'nu' })}
+              onChange={(e) => setForm({ ...form, gender: 'nữ' })}
               value='Female'
-              selectedValue={form.gender === 'nu' ? 'Female' : 'Male'}
+              selectedValue={form.gender === 'nữ' ? 'Female' : 'Male'}
             />
           </View>
 
