@@ -115,13 +115,16 @@ const TourDetail = () => {
     });
   }, [navigation]);
 
+console.log
 
     useEffect(() => {
-    const interval = setInterval(() => {
+      if(currentTour){
+ const interval = setInterval(() => {
       getCurrentTour();
-    }, 3000); // Kiểm tra mỗi 5 giây
-
-    return () => clearInterval(interval);
+    }, 5000); // Kiểm tra mỗi 5 giây
+    return () => clearInterval(interval)
+      }
+   
   }, [currentTour]);
 
 
