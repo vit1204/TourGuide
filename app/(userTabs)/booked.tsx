@@ -118,10 +118,12 @@ const TourDetail = () => {
 console.log
 
     useEffect(() => {
-      if(currentTour){
- const interval = setInterval(() => {
+      if(currentTour === null){
+        console.log("chua tao tour nao ca")
+      }else{
+        const interval = setInterval(() => {
       getCurrentTour();
-    }, 5000); // Kiểm tra mỗi 5 giây
+    }, 30000); // Kiểm tra mỗi 5 giây
     return () => clearInterval(interval)
       }
    
