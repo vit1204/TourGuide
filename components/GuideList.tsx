@@ -30,7 +30,7 @@ const GuideList = ( {userData, handleChange} : Props ) => {
     
           <Text className="text-gray text-[11px] mb-[10px] " > {userData.languages[0]} </Text>
       <Text className="text-black  text-[16px] font-Nbold mb-[3px]" > {userData.fullName} </Text>
-      <Text className="font-NRegular text-stone-600 mb-6  " > {userData.price}VND/h </Text>
+      <Text className="font-NRegular text-stone-600 mb-6  " > {userData.price}VND/day</Text>
 
 
 </View>

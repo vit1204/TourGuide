@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import {
   View,
   Text,
@@ -107,7 +107,7 @@ const TourguideList = () => {
           <View className="flex flex-row items-center justify-between">
             <Image width={150} height={200} resizeMode="contain" source={{uri:userData?.avatar}} />
             <View>
-              <Text className="text-[26px] font-semibold mb-[13px]">
+              <Text className="text-[24px] font-semibold mb-[13px]">
                 {" "}
                 {userData?.fullName} {" "}
               </Text>
@@ -121,7 +121,7 @@ const TourguideList = () => {
             </View>
           </View>
 
-          <Image  className="w-full h-[100px] " resizeMode="contain"  source={{uri: userData?.imageAuthenGuide}} />
+          <Image  className="w-full h-[180px] " resizeMode="contain"  source={{uri: userData?.imageAuthenGuide}} />
 
           <View className="mb-[30px]">
             <Text className="text-[20px] font-Nmedium "> Description </Text>
@@ -156,6 +156,15 @@ const TourguideList = () => {
                 </View>
               ))}
             </View>
+
+
+             <View className="mt-[30px]">
+            <Text className="text-[20px] font-Nmedium "> Policy </Text>
+           <View className="flex justify-start flex-wrap items-center pt-2 flex-row ">
+            <Text> Yes, I understand and agree to the  </Text> 
+            <Link href="http://51.79.173.117:3002/dieukhoan/" className="text-primary text-[18px]"> Travel Companions Agreement</Link>
+           </View>
+          </View>
           </View>
         </View>
         <View>

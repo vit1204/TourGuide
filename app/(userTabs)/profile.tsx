@@ -29,6 +29,7 @@ const TourGuideProfile = () => {
       await AsyncStorage.clear();
          router.replace('/login');
       setUser(null);
+
     } catch (error) {
       console.error('Error during logout', error);
       Alert.alert('Logout failed', 'There was an error during logout.');
