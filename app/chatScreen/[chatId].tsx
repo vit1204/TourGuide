@@ -53,9 +53,15 @@ const ChatScreen: React.FC = () => {
         }
     };
     useEffect(() => {
-        if (chatId) {
+        // if (chatId) {
+        //     fetchChatHistory();
+        // }
+        const intervalId = setInterval(() => {
+             if (chatId) {
             fetchChatHistory();
         }
+        },2000)
+        return () => clearInterval(intervalId)
     }, [nowId, chatId]);
 
     useEffect(() => {

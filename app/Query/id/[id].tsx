@@ -89,6 +89,14 @@ const TourguideList = () => {
       id: 1,
       text: "This is a limited edition item only available at large stores, so I bought it without being able to see it in person. The fabric is thin and soft. Many jackets come with a hood, but this one doesn't. I don't use a hood, and it looks neater without one. It's also nice that you can tighten the hem. It would have been even better if it came with a drawstring bag or something and was pocketable. I would have liked it to have water repellency and UV protection",
     },
+      {
+      id: 2,
+      text: "This is a limited edition item only available at large stores, so I bought it without being able to see it in person. The fabric is thin and soft. Many jackets come with a hood, but this one doesn't. I don't use a hood, and it looks neater without one. It's also nice that you can tighten the hem. It would have been even better if it came with a drawstring bag or something and was pocketable. I would have liked it to have water repellency and UV protection",
+    },
+      {
+      id: 3,
+      text: "This is a limited edition item only available at large stores, so I bought it without being able to see it in person. The fabric is thin and soft. Many jackets come with a hood, but this one doesn't. I don't use a hood, and it looks neater without one. It's also nice that you can tighten the hem. It would have been even better if it came with a drawstring bag or something and was pocketable. I would have liked it to have water repellency and UV protection",
+    },
   ];
 
 

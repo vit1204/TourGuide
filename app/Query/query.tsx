@@ -26,9 +26,8 @@ const Tab = createMaterialTopTabNavigator();
 
 const TourguideList = () => {
 const navigation  = useNavigation()
-const [numColumns, setNumColumns] = useState(2);
 
-  const { place, setPlace, date, setDate, gender,languages,setGender,setLanguages } = useGlobalContext();
+  const { place, date, gender,languages,setGender,setLanguages, hometown,hobbies } = useGlobalContext();
     const [userData, setUserData] = useState<any[]>([]);
   const pathname = usePathname();
   const [filterQuery, setFilterQuery] = useState({
@@ -37,8 +36,11 @@ const [numColumns, setNumColumns] = useState(2);
         price: "low_to_high",
     gender: gender,
     languages: languages,
-
+    hometown: hometown,
+    hobbies: hobbies
   });
+
+  console.log(hobbies)
 
 
 
@@ -71,6 +73,8 @@ const [numColumns, setNumColumns] = useState(2);
             freeTimeBegin: filterQuery.freeTimeBegin,
             gender: filterQuery.gender,
             languages: filterQuery.languages,
+            hometown: filterQuery.hometown,
+            hobbies: filterQuery.hobbies
           },
         }
       );

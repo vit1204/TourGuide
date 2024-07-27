@@ -27,8 +27,6 @@ const TourDetail = () => {
   const [isLoadingGuide, setIsLoadingGuide] = useState(true);
   const [isLoadingCustomer, setIsLoadingCustomer] = useState(true);
   
-
-
     React.useLayoutEffect(() => {
      navigation.setOptions({
       title: 'Tour List',
@@ -40,7 +38,6 @@ const TourDetail = () => {
         fontWeight: 'bold',
       },
     });
-    
   },[navigation])
 
 
@@ -66,10 +63,8 @@ const TourDetail = () => {
    const getCurrentGuide = async () => {
       try {
         if(currentTour){
-    
           const guideId  = currentTour.map((tour: { guide_id: any; })  => tour.guide_id);
-      
-const guideData = await getUserById(guideId[0])
+        const guideData = await getUserById(guideId[0])
           if(guideData.userDetial.role === 'guide' ){
             setGuide(guideData.userDetial as User);
         }
@@ -79,7 +74,7 @@ const guideData = await getUserById(guideId[0])
       } catch (error) {
         console.error('Error getting guide data', error);
       } finally {
-        setIsLoadingGuide(false); //Sau khi xử lý dữ liệu, set isLoadingGuide thành false
+        setIsLoadingGuide(false);
       }
     };
 
@@ -121,10 +116,20 @@ const guideData = await getUserById(guideId[0])
   }, [navigation]);
 
 
+    useEffect(() => {
+    const interval = setInterval(() => {
+      getCurrentTour();
+    }, 3000); // Kiểm tra mỗi 5 giây
+
+    return () => clearInterval(interval);
+  }, [currentTour]);
+
+
   const actitivy = currentTour?.filter((tour: { status: string; }) => tour.status === 'activity');
 
 
   const upcoming = currentTour?.filter((tour: { status: string; }) => tour.status === 'upcoming');
+
 
 
   if (isLoading || isLoadingGuide || isLoadingCustomer) {
@@ -139,15 +144,6 @@ const guideData = await getUserById(guideId[0])
 
   return (
 <SafeAreaView className='flex-1 h-full bg-white '>
-  <TouchableOpacity onPress={ async () => {
-    await getCurrentTour();
-    await getCurrentGuide();
-    await getCurrentCustomer()
-  }}>
-    <View>
-      <Text> Reload </Text>
-    </View>
-  </TouchableOpacity>
  <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: '#FF8C00',

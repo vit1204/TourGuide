@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor: '#000',
    borderWidth: 2,
+   marginBottom:10
   },
   selectedButton: {
     backgroundColor: '#FF8C00',

@@ -11,6 +11,8 @@ const GlobalProvider = ({children}) => {
     const [date,setDate] = useState(new Date())
     const [languages,setLanguages] = useState('')
     const [gender,setGender] = useState('')
+    const [hobbies, setHobbies] = useState('')
+    const [hometown,setHometown] = useState('')
 
 
     return(
@@ -25,7 +27,10 @@ const GlobalProvider = ({children}) => {
        gender,
        setGender,
     languages,
-    setLanguages
+    setLanguages,
+    hobbies, setHobbies,
+    hometown,setHometown
+
       }}
     >
       {children}

@@ -211,7 +211,7 @@ const CreateTourScreen: React.FC = () => {
       await sendMessage(chatId as string, user?._id as string, tourDetails);
 
       navigation.goBack();
-      router.push(`/chatScreen/${chatId}?userName=${userName}&userId=${userId}`);
+      // router.push(`/chatScreen/${chatId}?userName=${userName}&userId=${userId}`);
     } catch (error) {
       console.error('Error creating tour', error);
       Alert.alert('Error creating tour', 'An error occurred while creating the tour.');
