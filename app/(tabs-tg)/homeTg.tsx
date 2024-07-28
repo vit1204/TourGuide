@@ -90,7 +90,7 @@ const HomeTg = () => {
         <View className="bg-primary_darker px-2 flex-row items-center justify-between rounded-b-3xl">
           <View className="flex-row items-center">
             <Image source={images.logo} className="w-10 h-10 rounded-full mr-2" />
-            <Text className="text-blue_text font-extrabold text-xl">Byte Undefined</Text>
+            <Text className="text-blue_text font-extrabold text-xl">Friendly Tourguide</Text>
           </View>
           <View className="mb-4 flex-col items-center mr-2">
             <Text className="text-black text-base mt-4">Welcome Back</Text>

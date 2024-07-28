@@ -17,7 +17,7 @@ export default function App() {
   return (
     <SafeAreaView >
       <View >
-        <Text className="text-center text-3xl font-Nbold text-black">Byte Undefined</Text>
+        <Text className="text-center text-3xl font-Nbold text-black">Friendly Tourguide</Text>
         <Image  style={ { width:350, height:400, resizeMode:"contain", alignSelf:"center" }} source={require("../assets/images/logo.png")} />
              <Text className="text-center font-bold text-xl mb-[10px] " > Find Great Tour Guide </Text>
              <Text className=" font-medium ml-[65px] w-[70%] flex items-center justify-center flex-wrap text-center " > Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid dolore ducimus  </Text>  
